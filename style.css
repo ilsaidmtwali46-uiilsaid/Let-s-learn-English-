@@ -151,27 +151,36 @@ canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: 
 }
 
 .quiz-container { padding: 10px; text-align: center; }
+
+/* تعديل اتجاه الخانات ومربعات الكلمات والحروف من اليسار لليمين */
 .puzzle-slots, .word-slots {
   display: flex;
   justify-content: center;
+  direction: ltr;
   gap: 8px;
   margin: 20px 0;
   flex-wrap: wrap;
 }
+
 .slot, .word-slot {
   min-width: 45px; height: 45px; padding: 0 10px;
   border: 2px dashed #94a3b8; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem; font-weight: bold; background: #f8fafc; color: #334155;
+  direction: ltr;
 }
+
 .pool-container {
   display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap;
+  direction: ltr;
 }
+
 .tile, .word-tile {
   background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;
   padding: 10px 16px; border-radius: 10px; font-size: 1.1rem; font-weight: bold;
   cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
 .score-board {
   font-size: 1.05rem; font-weight: bold; color: #1e293b; margin-bottom: 10px;
   background: #f1f5f9; padding: 8px; border-radius: 10px;
