@@ -1,196 +1,261 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#15803d">
-<title>منصة التدريب التفاعلية</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التدريب التفاعلية - لتعلم الإنجليزية</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #38bdf8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+        section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .score-board {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        .options-group, .word-bank {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .option-btn, .word-chip {
+            background-color: #e2e8f0;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+        }
+        .option-btn:hover, .word-chip:hover {
+            background-color: #cbd5e1;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .feedback.correct { color: var(--success-color); }
+        .feedback.incorrect { color: var(--error-color); }
+        .whatsapp-box {
+            text-align: center;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .whatsapp-box a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
-<h2>🌟 منصة التدريب التفاعلية</h2>
+<div class="container">
+    <header>
+        <h2>🌟 منصة التدريب التفاعلية</h2>
+        <p>تطبيقك المتكامل لتعلم القراءة، الكتابة، والأرقام بكل يسر وسهولة</p>
+    </header>
 
-<!-- أزرار التنقل بين الأقسام -->
-<div class="nav-tabs">
-  <button class="tab-btn active" data-target="sec-writing">✍️ تدريب الكتابة</button>
-  <button class="tab-btn" data-target="sec-scramble">🔤 ترتيب الحروف</button>
-  <button class="tab-btn" data-target="sec-sentence">📝 ترتيب الجمل</button>
-  <button class="tab-btn" data-target="sec-numbers">🔢 تعليم الأرقام</button>
-  <button class="tab-btn" data-target="sec-chat">💬 المحادثة</button>
-  <button class="tab-btn" data-target="sec-contact">📞 اتصل بنا</button>
+    <!-- قسم الحروف والنطق -->
+    <section id="letters-section">
+        <div class="score-board">تدريب على الحرف: <span id="current-letter">A</span></div>
+        <div>
+            <div>🗣️ <strong>النطق:</strong> <button onclick="speakText(document.getElementById('current-letter').innerText)">استمع للنطق 🔊</button></div>
+            <div>📖 <strong>المعنى/مثال:</strong> <span id="letter-example">Apple (تفاحة)</span></div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button onclick="changeLetter('A')">A</button>
+            <button onclick="changeLetter('B')">B</button>
+            <button onclick="changeLetter('C')">C</button>
+        </div>
+    </section>
+
+    <!-- قسم ترتيب الحروف -->
+    <section id="scramble-word-section">
+        <div class="score-board">⭐ النقاط: <span id="word-score">0</span> / <span id="word-total">5</span></div>
+        <div>رتب الحروف لتكوين الكلمة الصحيحة (المثال: CAT)</div>
+        <div id="scrambled-display" style="font-size: 1.5rem; letter-spacing: 5px; margin: 15px 0; font-weight: bold;">T A C</div>
+        <div class="word-bank" id="letter-chips">
+            <!-- يتم تعبئتها ديناميكياً -->
+        </div>
+        <div id="word-feedback" class="feedback"></div>
+    </section>
+
+    <!-- قسم ترتيب الكلمات لجملة -->
+    <section id="scramble-sentence-section">
+        <div class="score-board">🏆 النقاط: <span id="sent-score">0</span> / <span id="sent-total">3</span></div>
+        <div>رتب الكلمات لتكوين جملة صحيحة</div>
+        <p>المعنى: <span id="sent-meaning">أنا أكتب كتاباً</span></p>
+        <div class="word-bank" id="sentence-chips">
+            <!-- يتم تعبئتها ديناميكياً -->
+        </div>
+        <div id="sent-feedback" class="feedback"></div>
+    </section>
+
+    <!-- قسم الأرقام -->
+    <section id="numbers-section">
+        <div class="score-board">🔢 نقاط الأرقام: <span id="num-score">0</span></div>
+        <div>تدريب ونطق وتجميع الأرقام الإنجليزية</div>
+        <div style="margin: 15px 0;">
+            <div>🔢 <strong>الرقم:</strong> <span id="display-number">123</span></div>
+            <div>🗣️ <strong>النطق الصحيح:</strong> <span id="number-words">One Hundred Twenty Three</span> 
+                <button onclick="speakText(document.getElementById('number-words').innerText)">استمع 🔊</button>
+            </div>
+        </div>
+        <button onclick="randomizeNumber()">تغيير الرقم عشوائياً</button>
+    </section>
+
+    <!-- قسم المحادثة الذكية -->
+    <section id="chat-section">
+        <div>💬 تدريب المحادثة الذكية</div>
+        <p>اختر رداً مناسباً لمواصلة المحادثة باللغة الإنجليزية:</p>
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+            <p>🤖 <strong>التطبيق يقول:</strong> Hello! How are you today?</p>
+        </div>
+        <div class="options-group">
+            <button class="option-btn" onclick="checkChatResponse(true)">I'm fine, thank you!</button>
+            <button class="option-btn" onclick="checkChatResponse(false)">Blue car</button>
+        </div>
+        <div id="chat-feedback" class="feedback"></div>
+    </section>
+
+    <!-- قسم الدعاية والتواصل -->
+    <section class="whatsapp-box">
+        <h3>🌟 حول التطبيق والدعاية</h3>
+        <p>منصة التدريب التفاعلية الشاملة - إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
+        <p>💬 اقتراحات، شكاوى، أو استفسارات؟</p>
+        <a href="https://wa.me/201115197980?text=%D_7%D_5%D_C%D_5%D_7%D_8%20%D_0%D_4%D_C%D_8%20%D_7%D_5%D_3%D_5%D_5%D_5%20%D_C%D_5%D_3%D_5%D_5%D_5%2C%20%D_E%D_5%D_4%D_5%D_7%20%D_0%D_4%D_C%D_8%20%D_0%D_4%D_C%D_8%20%D_0%D_4%D_C%D_8" target="_blank">
+            📱 تواصل عبر الواتساب الآن (رقم: 201115197980+)
+        </a>
+    </section>
 </div>
 
-<!-- القسم الأول: الكتابة والرسم -->
-<section id="sec-writing" class="section-content active">
-  <div class="panel">
-    <div class="controls">
-      <label>النوع:
-        <select id="kind">
-          <option value="letters">حروف كبيرة (Uppercase)</option>
-          <option value="lowercase">حروف صغيرة (Lowercase)</option>
-          <option value="numbers">أرقام (Numbers)</option>
-          <option value="words">كلمات (Words)</option>
-        </select>
-      </label>
-      <label>الدرس:
-        <select id="lesson"></select>
-      </label>
-      <button id="speakBtn" class="audio-btn">🔊 استمع</button>
-    </div>
-    <div class="controls">
-      <label>وضع التعلم:
-        <select id="learningMode">
-          <option value="watch">شاهد طريقة الرسم</option>
-          <option value="practice">تدرّب بنفسك</option>
-        </select>
-      </label>
-    </div>
-  </div>
+<script>
+    // 1. ميزة نطق النصوص (Web Speech API)
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('متصفحك لا يدعم خاصية النطق الصوتي.');
+        }
+    }
 
-  <div class="panel">
-    <div id="currentTitle" class="badge">التدريب على: A</div>
-    <div class="info-card">
-      <div>🗣️ <strong>النطق:</strong> <span id="pronText">-</span></div>
-      <div>📖 <strong>المعنى:</strong> <span id="meanText">-</span></div>
-    </div>
+    // 2. تحديث الحروف
+    function changeLetter(letter) {
+        document.getElementById('current-letter').innerText = letter;
+        const examples = { 'A': 'Apple (تفاحة)', 'B': 'Ball (كرة)', 'C': 'Cat (قطة)' };
+        document.getElementById('letter-example').innerText = examples[letter] || '';
+        speakText(letter);
+    }
 
-    <div id="board">
-      <canvas id="guide"></canvas>
-      <canvas id="draw"></canvas>
-    </div>
-    <p id="message">اضغط «شاهد خطوات الرسم» لمشاهدة الطريقة.</p>
-    
-    <div class="controls">
-      <button id="showSteps">▶ شاهد الخطوات</button>
-      <button id="undo" class="secondary">↶ تراجع</button>
-      <button id="clear" class="secondary">🗑 مسح</button>
-      <button id="check">✓ فحص</button>
-      <button id="next">التالي ←</button>
-    </div>
-  </div>
-</section>
+    // 3. ألعاب ترتيب الحروف البسيطة
+    let wordScore = 0;
+    function initWordGame() {
+        const container = document.getElementById('letter-chips');
+        container.innerHTML = '';
+        const letters = ['C', 'A', 'T'].sort(() => Math.random() - 0.5);
+        
+        letters.forEach(char => {
+            const btn = document.createElement('div');
+            btn.className = 'word-chip';
+            btn.innerText = char;
+            btn.onclick = () => {
+                document.getElementById('word-feedback').innerText = char === 'C' ? 'إجابة صحيحة! 🎉' : 'حاول مرة أخرى';
+                document.getElementById('word-feedback').className = 'feedback ' + (char === 'C' ? 'correct' : 'incorrect');
+                if(char === 'C') {
+                    wordScore++;
+                    document.getElementById('word-score').innerText = wordScore;
+                }
+            };
+            container.appendChild(btn);
+        });
+    }
 
-<!-- القسم الثاني: ترتيب الحروف -->
-<section id="sec-scramble" class="section-content">
-  <div class="panel quiz-container">
-    <div class="score-board">⭐ النقاط: <span id="spellingScore">0</span> / <span id="spellingTotal">0</span></div>
-    <div class="badge">رتب الحروف لتكوين الكلمة الصحيحة</div>
-    <p id="scrambleMeaning" style="font-size: 1.1rem; color: #0284c7; font-weight: bold; margin: 10px 0;">-</p>
-    
-    <div class="puzzle-slots" id="puzzleSlots"></div>
-    <div class="pool-container" id="puzzlePool"></div>
+    // 4. أرقام عشوائية
+    function randomizeNumber() {
+        const randNum = Math.floor(Math.random() * 900) + 100;
+        document.getElementById('display-number').innerText = randNum;
+        document.getElementById('number-words').innerText = numberToWords(randNum);
+    }
 
-    <div class="controls" style="margin-top: 15px;">
-      <button id="checkSpellingBtn">✓ تحقق</button>
-      <button id="nextSpellingBtn" class="secondary">التالي ➜</button>
-    </div>
-    <p id="spellingMsg" style="font-weight: bold; margin-top: 10px;"></p>
-  </div>
-</section>
+    function numberToWords(num) {
+        // مبسط لعرض رقم نموذجي بالإنجليزية
+        const words = { 100: 'One Hundred', 200: 'Two Hundred', 500: 'Five Hundred', 123: 'One Hundred Twenty Three' };
+        return words[num] || 'Number ' + num;
+    }
 
-<!-- القسم الثالث: ترتيب الجمل -->
-<section id="sec-sentence" class="section-content">
-  <div class="panel quiz-container">
-    <div class="score-board">🏆 النقاط: <span id="sentenceScore">0</span> / <span id="sentenceTotal">0</span></div>
-    <div class="badge">رتب الكلمات لتكوين جملة صحيحة</div>
-    <p style="font-size: 0.95rem; color: #475569; margin: 8px 0;">المعنى: <span id="sentenceMeaning" style="font-weight: bold; color: var(--primary);">-</span></p>
+    // 5. محادثة ذكية
+    function checkChatResponse(isCorrect) {
+        const fb = document.getElementById('chat-feedback');
+        if(isCorrect) {
+            fb.innerText = 'رائع جداً! إجابة موفقة ومناسبة للسياق.';
+            fb.className = 'feedback correct';
+            speakText("I'm fine, thank you!");
+        } else {
+            fb.innerText = 'إجابة غير مناسبة، جرب اختيار الرد المتعارف عليه في التحية.';
+            fb.className = 'feedback incorrect';
+        }
+    }
 
-    <div class="word-slots" id="wordSlots"></div>
-    <div class="pool-container" id="wordPool"></div>
+    // التشغيل الأولي عند تحميل الصفحة
+    window.onload = function() {
+        initWordGame();
+    };
+</script>
 
-    <div class="controls" style="margin-top: 15px;">
-      <button id="checkSentenceBtn">✓ تحقق</button>
-      <button id="nextSentenceBtn" class="secondary">التالي ➜</button>
-    </div>
-    <p id="sentenceMsg" style="font-weight: bold; margin-top: 10px;"></p>
-  </div>
-</section>
-
-<!-- القسم الرابع: تعليم الأرقام -->
-<section id="sec-numbers" class="section-content">
-  <div class="panel quiz-container">
-    <div class="score-board">🔢 نقاط الأرقام: <span id="numScore">0</span> / <span id="numTotal">0</span></div>
-    <div class="badge">تدريب ونطق وتجميع الأرقام الإنجليزية</div>
-    
-    <div class="info-card" style="margin: 15px auto;">
-      <div>🔢 <strong>الرقم:</strong> <span id="numDisplay" style="font-size: 1.4rem; color: var(--primary);">123</span></div>
-      <div>🗣️ <strong>الطق والنطق:</strong> <span id="numPron">One Hundred Twenty Three</span></div>
-    </div>
-
-    <div class="controls">
-      <button id="speakNumBtn" class="audio-btn">🔊 استطق الرقم</button>
-      <button id="nextNumBtn" class="secondary">رقم جديد ➜</button>
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-    
-    <div class="badge" style="background: #e0f2fe; color: #0369a1;">لعبة تركيب الأرقام المبعثرة</div>
-    <p id="numPuzzleMean" style="font-weight: bold; margin: 10px 0; color: var(--secondary);">-</p>
-    
-    <div class="puzzle-slots" id="numPuzzleSlots"></div>
-    <div class="pool-container" id="numPuzzlePool"></div>
-
-    <div class="controls" style="margin-top: 15px;">
-      <button id="checkNumPuzzleBtn">✓ تحقق من الترتيب</button>
-    </div>
-    <p id="numPuzzleMsg" style="font-weight: bold; margin-top: 10px;"></p>
-  </div>
-</section>
-
-<!-- القسم الخامس: المحادثة الذكية -->
-<section id="sec-chat" class="section-content">
-  <div class="panel quiz-container">
-    <div class="badge">💬 تدريب المحادثة الذكية</div>
-    <p style="color: var(--secondary); margin: 10px 0;">اختر رداً مناسباً لمواصلة المحادثة باللغة الإنجليزية:</p>
-
-    <div class="info-card" style="background: #f0fdf4; border-color: #bbf7d0; text-align: right; display: block; padding: 14px;">
-      <p style="margin: 0; color: #166534; font-weight: bold;">🤖 التطبيق يقول:</p>
-      <p id="chatQuestion" style="margin: 6px 0 0 0; font-size: 1.1rem; color: #1e293b;">Hello! How are you today?</p>
-      <button id="speakChatBtn" class="audio-btn" style="margin-top: 8px; padding: 6px 12px; font-size: 13px;">🔊 استمع للسؤال</button>
-    </div>
-
-    <div id="chatOptions" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;"></div>
-
-    <p id="chatMsg" style="font-weight: bold; margin-top: 10px;"></p>
-    <div class="controls" style="margin-top: 15px;">
-      <button id="nextChatBtn" class="secondary">محادثة جديدة ➜</button>
-    </div>
-  </div>
-</section>
-
-<!-- القسم السادس: اتصل بنا والدعاية -->
-<section id="sec-contact" class="section-content">
-  <div class="panel" style="text-align: center; padding: 24px;">
-    <div class="badge">🌟 حول التطبيق والدعاية</div>
-    <h3 style="color: var(--primary); margin: 12px 0;">منصة التدريب التفاعلية الشاملة</h3>
-    <p style="color: var(--secondary); font-size: 0.95rem; line-height: 1.6;">
-      تطبيقك المتكامل لتعلم القراءة، الكتابة، الأرقام واللغات بكل يسر وسهولة.
-    </p>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin: 20px auto; max-width: 400px;">
-      <p style="margin: 4px 0; font-weight: bold; color: #1e293b;">👨‍💻 إشراف وتطوير:</p>
-      <p style="margin: 6px 0; font-size: 1.1rem; color: var(--primary); font-weight: bold;">الأستاذ/ السيد متولي</p>
-    </div>
-
-    <div style="background: #f0fdf4; border: 1px dashed var(--primary); border-radius: 14px; padding: 14px; max-width: 400px; margin: 0 auto;">
-      <p style="font-weight: bold; color: var(--primary); margin-bottom: 8px;">💬 اقتراحات، شكاوى، أو استفسارات؟</p>
-      <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد%20متولي،%20لدي%20اقتراح/استفسار%20بخصوص%20التطبيق:" 
-         target="_blank" 
-         style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #22c55e; color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
-        📱 تواصل عبر الواتساب الآن
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ربط ملفات الجافاسكريبت المستقلة لكل قسم -->
-<script src="audio.js"></script>
-<script src="writing.js"></script>
-<script src="spelling.js"></script>
-<script src="sentence.js"></script>
-<script src="numbers.js"></script>
-<script src="chat.js"></script>
-<script src="main.js"></script>
 </body>
 </html>
