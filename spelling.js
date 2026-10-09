@@ -10,7 +10,7 @@
     const item = spellingWords[currentSpellingIdx];
     document.getElementById("spellingTotal").textContent = spellingWords.length;
     document.getElementById("spellingScore").textContent = spellingScoreVal;
-    document.getElementById("scrambleMeaning").textContent = "المعنى: " + item.mean;
+    document.getElementById("scrambleMeaning").textContent = "المعنى: " + item.mean + " (رتب الحروف من اليسار لليمين)";
     document.getElementById("spellingMsg").textContent = "";
 
     const slotsContainer = document.getElementById("puzzleSlots");
@@ -60,7 +60,7 @@
       window.speakText(targetWord);
     } else {
       msg.style.color = "#dc2626";
-      msg.textContent = "❌ حاول مجدداً، الترتيب غير صحيح.";
+      msg.textContent = "❌ حاول مجدداً، الترتيب من اليسار لليمين غير صحيح.";
     }
   };
 
