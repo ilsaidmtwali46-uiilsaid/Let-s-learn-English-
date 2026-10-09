@@ -7,34 +7,60 @@
   };
 
   const dictionary = {
-    "A": { pron: "إِيـه", mean: "Apple 🍎" }, "B": { pron: "بِـي", mean: "Ball ⚽" },
-    "C": { pron: "سِـي", mean: "Cat 🐱" }, "D": { pron: "دِي", mean: "Dog 🐶" },
-    "E": { pron: "إِي", mean: "Egg 🥚" }, "F": { pron: "إِفْ", mean: "Fish 🐟" },
-    "G": { pron: "جِـي", mean: "Girl 👧" }, "H": { pron: "إِتْشْ", mean: "Hat 👒" },
-    "I": { pron: "آيْ", mean: "Ice 🧊" }, "J": { pron: "جِـيْه", mean: "Juice 🧃" },
-    "K": { pron: "كِـي", mean: "Kite 🪁" }, "L": { pron: "إِلْ", mean: "Lion 🦁" },
-    "M": { pron: "إِمْ", mean: "Milk 🥛" }, "N": { pron: "إِنْ", mean: "Nest 🪺" },
-    "O": { pron: "أُو", mean: "Owl 🦉" }, "P": { pron: "بِـي", mean: "Pen 🖊️" },
-    "Q": { pron: "كْيُـو", mean: "Queen 👑" }, "R": { pron: "آرْ", mean: "Rabbit 🐰" },
-    "S": { pron: "إِسْ", mean: "Sun ☀️" }, "T": { pron: "تِـي", mean: "Tree 🌳" },
-    "U": { pron: "يُـو", mean: "Umbrella ☂️" }, "V": { pron: "فِـي", mean: "Van 🚐" },
-    "W": { pron: "دَبَلْيُـو", mean: "Water 💧" }, "X": { pron: "إِكْسْ", mean: "X-ray" },
-    "Y": { pron: "وَايْ", mean: "Yellow 🟡" }, "Z": { pron: "زِيرُو", mean: "Zebra 🦓" },
-    "0": { pron: "زِيرُو", mean: "Zero" }, "1": { pron: "وَانْ", mean: "One" },
-    "2": { pron: "تُـو", mean: "Two" }, "3": { pron: "ثْرِي", mean: "Three" },
-    "4": { pron: "فُـورْ", mean: "Four" }, "5": { pron: "فَايْفْ", mean: "Five" },
-    "6": { pron: "سِكْسْ", mean: "Six" }, "7": { pron: "سَفَنْ", mean: "Seven" },
-    "8": { pron: "إَيْتْ", mean: "Eight" }, "9": { pron: "نَايْنْ", mean: "Nine" },
-    "cat": { pron: "كَّاتْ", mean: "قطة 🐱" }, "dog": { pron: "دُوغْ", mean: "كلب 🐶" },
-    "sun": { pron: "سَنْ", mean: "شمس ☀️" }, "pen": { pron: "بِينْ", mean: "قلم 🖊️" },
-    "book": { pron: "بُوكْ", mean: "كتاب 📖" }, "milk": { pron: "مِيلْكْ", mean: "حليب 🥛" },
-    "rabbit": { pron: "رَابِتْ", mean: "أرنب 🐇" }, "fish": { pron: "فِيشْ", mean: "سمكة 🐟" },
-    "frog": { pron: "فْرُوغْ", mean: "ضفدع 🐸" }
+    "A": { pron: "إِيـه", mean: "Apple 🍎", minStrokes: 2 }, 
+    "B": { pron: "بِـي", mean: "Ball ⚽", minStrokes: 2 },
+    "C": { pron: "سِـي", mean: "Cat 🐱", minStrokes: 1 }, 
+    "D": { pron: "دِي", mean: "Dog 🐶", minStrokes: 2 },
+    "E": { pron: "إِي", mean: "Egg 🥚", minStrokes: 2 }, 
+    "F": { pron: "إِفْ", mean: "Fish 🐟", minStrokes: 2 },
+    "G": { pron: "جِـي", mean: "Girl 👧", minStrokes: 1 }, 
+    "H": { pron: "إِتْشْ", mean: "Hat 👒", minStrokes: 3 },
+    "I": { pron: "آيْ", mean: "Ice 🧊", minStrokes: 1 }, 
+    "J": { pron: "جِـيْه", mean: "Juice 🧃", minStrokes: 1 },
+    "K": { pron: "كِـي", mean: "Kite 🪁", minStrokes: 2 }, 
+    "L": { pron: "إِلْ", mean: "Lion 🦁", minStrokes: 1 },
+    "M": { pron: "إِمْ", mean: "Milk 🥛", minStrokes: 1 }, 
+    "N": { pron: "إِنْ", mean: "Nest 🪺", minStrokes: 1 },
+    "O": { pron: "أُو", mean: "Owl 🦉", minStrokes: 1 }, 
+    "P": { pron: "بِـي", mean: "Pen 🖊️", minStrokes: 2 },
+    "Q": { pron: "كْيُـو", mean: "Queen 👑", minStrokes: 2 }, 
+    "R": { pron: "آرْ", mean: "Rabbit 🐰", minStrokes: 2 },
+    "S": { pron: "إِسْ", mean: "Sun ☀️", minStrokes: 1 }, 
+    "T": { pron: "تِـي", mean: "Tree 🌳", minStrokes: 2 },
+    "U": { pron: "يُـو", mean: "Umbrella ☂️", minStrokes: 1 }, 
+    "V": { pron: "فِـي", mean: "Van 🚐", minStrokes: 1 },
+    "W": { pron: "دَبَلْيُـو", mean: "Water 💧", minStrokes: 1 }, 
+    "X": { pron: "إِكْسْ", mean: "X-ray", minStrokes: 2 },
+    "Y": { pron: "وَايْ", mean: "Yellow 🟡", minStrokes: 2 }, 
+    "Z": { pron: "زِيرُو", mean: "Zebra 🦓", minStrokes: 1 },
+    "0": { pron: "زِيرُو", mean: "Zero", minStrokes: 1 }, 
+    "1": { pron: "وَانْ", mean: "One", minStrokes: 1 },
+    "2": { pron: "تُـو", mean: "Two", minStrokes: 1 }, 
+    "3": { pron: "ثْرِي", mean: "Three", minStrokes: 2 },
+    "4": { pron: "فُـورْ", mean: "Four", minStrokes: 2 }, 
+    "5": { pron: "فَايْفْ", mean: "Five", minStrokes: 2 },
+    "6": { pron: "سِكْسْ", mean: "Six", minStrokes: 1 }, 
+    "7": { pron: "سَفَنْ", mean: "Seven", minStrokes: 1 },
+    "8": { pron: "إَيْتْ", mean: "Eight", minStrokes: 1 }, 
+    "9": { pron: "نَايْنْ", mean: "Nine", minStrokes: 1 },
+    "cat": { pron: "كَّاتْ", mean: "قطة 🐱", minStrokes: 2 }, 
+    "dog": { pron: "دُوغْ", mean: "كلب 🐶", minStrokes: 2 },
+    "sun": { pron: "سَنْ", mean: "شمس ☀️", minStrokes: 2 }, 
+    "pen": { pron: "بِينْ", mean: "قلم 🖊️", minStrokes: 3 },
+    "book": { pron: "بُوكْ", mean: "كتاب 📖", minStrokes: 3 }, 
+    "milk": { pron: "مِيلْكْ", mean: "حليب 🥛", minStrokes: 3 },
+    "rabbit": { pron: "رَابِتْ", mean: "أرنب 🐇", minStrokes: 4 }, 
+    "fish": { pron: "فِيشْ", mean: "سمكة 🐟", minStrokes: 2 },
+    "frog": { pron: "فْرُوغْ", mean: "ضفدع 🐸", minStrokes: 3 }
   };
 
   data.lowercase.forEach(ch => {
     const upper = ch.toUpperCase();
-    dictionary[ch] = { pron: dictionary[upper] ? dictionary[upper].pron : ch, mean: "حرف صغير (" + upper + ")" };
+    dictionary[ch] = { 
+      pron: dictionary[upper] ? dictionary[upper].pron : ch, 
+      mean: "حرف صغير (" + upper + ")",
+      minStrokes: dictionary[upper] ? dictionary[upper].minStrokes : 1 
+    };
   });
 
   const P = {
@@ -162,11 +188,11 @@
   function updateLesson() {
     current = lesson.value;
     currentTitle.textContent = "التدريب على: " + current;
-    const info = dictionary[current] || { pron: "-", mean: "-" };
+    const info = dictionary[current] || { pron: "-", mean: "-", minStrokes: 1 };
     pronText.textContent = info.pron;
     meanText.textContent = info.mean;
     stopAnimation(); clearDrawing(); drawGuide();
-    message.textContent = mode.value === "watch" ? "اضغط «شاهد خطوات الرسم» لمشاهدة الطريقة." : "ارسم بإصبعك فوق النموذج الرمادي.";
+    message.textContent = mode.value === "watch" ? "اضغط «شاهد خطوات الرسم» لمشاهدة الطريقة." : "ارسم الحرف بدقة داخل المربع الرمادي.";
   }
 
   function stopAnimation() {
@@ -265,10 +291,26 @@
     animateFrame();
   }
 
+  // نظام فحص صارم واحترافي يعتمد على عدد الضربات ومنطق الرسم
   function checkWork() {
     const userPoints = strokes.flat();
-    if (userPoints.length < 6) { message.textContent = "الرجاء كتابة الشكل أولاً!"; return; }
-    message.textContent = "🌟 ممتاز جداً! أداء رائع وكتابة سليمة.";
+    if (userPoints.length < 15) {
+      message.style.color = "#dc2626";
+      message.textContent = "❌ الرسمة صغيرة جداً أو غير واضحة، حاول مجدداً.";
+      return;
+    }
+
+    const info = dictionary[current] || { minStrokes: 1 };
+    const requiredStrokes = info.minStrokes;
+
+    if (strokes.length < requiredStrokes) {
+      message.style.color = "#dc2626";
+      message.textContent = `❌ عدد الحركات غير صحيح. حرف (${current}) يتطلب على الأقل ${requiredStrokes} حركات (ضربات قلم). شاهد خطوات الرسم!`;
+      return;
+    }
+
+    message.style.color = "#15803d";
+    message.textContent = "🌟 ممتاز جداً! كتابة دقيقة وصحيحة.";
   }
 
   kind.addEventListener("change", populateLessons);
