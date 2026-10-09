@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#15803d">
+<title>منصة التدريب التفاعلية</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>🌟 منصة التدريب التفاعلية</h2>
+
+<!-- أزرار التنقل بين الأقسام -->
+<div class="nav-tabs">
+  <button class="tab-btn active" data-target="sec-writing">✍️ تدريب الكتابة</button>
+  <button class="tab-btn" data-target="sec-scramble">🔤 ترتيب الحروف</button>
+  <button class="tab-btn" data-target="sec-sentence">📝 ترتيب الجمل</button>
+  <button class="tab-btn" data-target="sec-numbers">🔢 تعليم الأرقام</button>
+  <button class="tab-btn" data-target="sec-contact">📞 اتصل بنا</button>
+</div>
+
+<!-- القسم الأول: الكتابة والرسم -->
+<section id="sec-writing" class="section-content active">
+  <div class="panel">
+    <div class="controls">
+      <label>النوع:
+        <select id="kind">
+          <option value="letters">حروف كبيرة (Uppercase)</option>
+          <option value="lowercase">حروف صغيرة (Lowercase)</option>
+          <option value="numbers">أرقام (Numbers)</option>
+          <option value="words">كلمات (Words)</option>
+        </select>
+      </label>
+      <label>الدرس:
+        <select id="lesson"></select>
+      </label>
+      <button id="speakBtn" class="audio-btn">🔊 استمع</button>
+    </div>
+    <div class="controls">
+      <label>وضع التعلم:
+        <select id="learningMode">
+          <option value="watch">شاهد طريقة الرسم</option>
+          <option value="practice">تدرّب بنفسك</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div id="currentTitle" class="badge">التدريب على: A</div>
+    <div class="info-card">
+      <div>🗣️ <strong>النطق:</strong> <span id="pronText">-</span></div>
+      <div>📖 <strong>المعنى:</strong> <span id="meanText">-</span></div>
+    </div>
+
+    <div id="board">
+      <canvas id="guide"></canvas>
+      <canvas id="draw"></canvas>
+    </div>
+    <p id="message">اضغط «شاهد خطوات الرسم» لمشاهدة الطريقة.</p>
+    
+    <div class="controls">
+      <button id="showSteps">▶ شاهد الخطوات</button>
+      <button id="undo" class="secondary">↶ تراجع</button>
+      <button id="clear" class="secondary">🗑 مسح</button>
+      <button id="check">✓ فحص</button>
+      <button id="next">التالي ←</button>
+    </div>
+  </div>
+</section>
+
+<!-- القسم الثاني: ترتيب الحروف -->
+<section id="sec-scramble" class="section-content">
+  <div class="panel quiz-container">
+    <div class="score-board">⭐ النقاط: <span id="spellingScore">0</span> / <span id="spellingTotal">0</span></div>
+    <div class="badge">رتب الحروف لتكوين الكلمة الصحيحة</div>
+    <p id="scrambleMeaning" style="font-size: 1.1rem; color: #0284c7; font-weight: bold; margin: 10px 0;">-</p>
+    
+    <div class="puzzle-slots" id="puzzleSlots"></div>
+    <div class="pool-container" id="puzzlePool"></div>
+
+    <div class="controls" style="margin-top: 15px;">
+      <button id="checkSpellingBtn">✓ تحقق</button>
+      <button id="nextSpellingBtn" class="secondary">التالي ➜</button>
+    </div>
+    <p id="spellingMsg" style="font-weight: bold; margin-top: 10px;"></p>
+  </div>
+</section>
+
+<!-- القسم الثالث: ترتيب الجمل -->
+<section id="sec-sentence" class="section-content">
+  <div class="panel quiz-container">
+    <div class="score-board">🏆 النقاط: <span id="sentenceScore">0</span> / <span id="sentenceTotal">0</span></div>
+    <div class="badge">رتب الكلمات لتكوين جملة صحيحة</div>
+    <p style="font-size: 0.95rem; color: #475569; margin: 8px 0;">المعنى: <span id="sentenceMeaning" style="font-weight: bold; color: var(--primary);">-</span></p>
+
+    <div class="word-slots" id="wordSlots"></div>
+    <div class="pool-container" id="wordPool"></div>
+
+    <div class="controls" style="margin-top: 15px;">
+      <button id="checkSentenceBtn">✓ تحقق</button>
+      <button id="nextSentenceBtn" class="secondary">التالي ➜</button>
+    </div>
+    <p id="sentenceMsg" style="font-weight: bold; margin-top: 10px;"></p>
+  </div>
+</section>
+
+<!-- القسم الرابع: تعليم الأرقام -->
+<section id="sec-numbers" class="section-content">
+  <div class="panel quiz-container">
+    <div class="score-board">🔢 نقاط الأرقام: <span id="numScore">0</span> / <span id="numTotal">0</span></div>
+    <div class="badge">تدريب ونطق وتجميع الأرقام الإنجليزية</div>
+    
+    <div class="info-card" style="margin: 15px auto;">
+      <div>🔢 <strong>الرقم:</strong> <span id="numDisplay" style="font-size: 1.4rem; color: var(--primary);">123</span></div>
+      <div>🗣️ <strong>الطق والنطق:</strong> <span id="numPron">One Hundred Twenty Three</span></div>
+    </div>
+
+    <div class="controls">
+      <button id="speakNumBtn" class="audio-btn">🔊 استطق الرقم</button>
+      <button id="nextNumBtn" class="secondary">رقم جديد ➜</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+    
+    <div class="badge" style="background: #e0f2fe; color: #0369a1;">لعبة تركيب الأرقام المبعثرة</div>
+    <p id="numPuzzleMean" style="font-weight: bold; margin: 10px 0; color: var(--secondary);">-</p>
+    
+    <div class="puzzle-slots" id="numPuzzleSlots"></div>
+    <div class="pool-container" id="numPuzzlePool"></div>
+
+    <div class="controls" style="margin-top: 15px;">
+      <button id="checkNumPuzzleBtn">✓ تحقق من الترتيب</button>
+    </div>
+    <p id="numPuzzleMsg" style="font-weight: bold; margin-top: 10px;"></p>
+  </div>
+</section>
+
+<!-- القسم الخامس: اتصل بنا والدعاية -->
+<section id="sec-contact" class="section-content">
+  <div class="panel" style="text-align: center; padding: 24px;">
+    <div class="badge">🌟 حول التطبيق والدعاية</div>
+    <h3 style="color: var(--primary); margin: 12px 0;">منصة التدريب التفاعلية الشاملة</h3>
+    <p style="color: var(--secondary); font-size: 0.95rem; line-height: 1.6;">
+      تطبيقك المتكامل لتعلم القراءة، الكتابة، الأرقام واللغات بكل يسر وسهولة.
+    </p>
+
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin: 20px auto; max-width: 400px;">
+      <p style="margin: 4px 0; font-weight: bold; color: #1e293b;">👨‍💻 إشراف وتطوير:</p>
+      <p style="margin: 6px 0; font-size: 1.1rem; color: var(--primary); font-weight: bold;">الأستاذ/ السيد متولي</p>
+    </div>
+
+    <div style="background: #f0fdf4; border: 1px dashed var(--primary); border-radius: 14px; padding: 14px; max-width: 400px; margin: 0 auto;">
+      <p style="font-weight: bold; color: var(--primary); margin-bottom: 8px;">💬 اقتراحات، شكاوى، أو استفسارات؟</p>
+      <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد%20متولي،%20لدي%20اقتراح/استفسار%20بخصوص%20التطبيق:" 
+         target="_blank" 
+         style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #22c55e; color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+        📱 تواصل عبر الواتساب الآن
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ربط ملفات الجافاسكريبت المستقلة لكل قسم -->
+<script src="audio.js"></script>
+<script src="writing.js"></script>
+<script src="spelling.js"></script>
+<script src="sentence.js"></script>
+<script src="numbers.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
