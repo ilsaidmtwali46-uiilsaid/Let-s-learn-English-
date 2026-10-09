@@ -291,7 +291,7 @@
     animateFrame();
   }
 
-  // نظام فحص صارم واحترافي يعتمد على عدد الضربات ومنطق الرسم
+  // --- التعديل هنا: نظام فحص صارم يتحقق من مكان الرسم وحجمه وعدد الحركات ---
   function checkWork() {
     const userPoints = strokes.flat();
     if (userPoints.length < 15) {
@@ -300,18 +300,45 @@
       return;
     }
 
+    // حساب حدود الرسمة للتأكد من أن الكاتبة في منتصف اللوحة فوق النموذج الرمادي
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    userPoints.forEach(p => {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    });
+
+    const boardWidth = board.clientWidth;
+    const boardHeight = board.clientHeight;
+    const userCenterX = (minX + maxX) / 2;
+    const userCenterY = (minY + maxY) / 2;
+
+    const expectedCenterX = boardWidth / 2;
+    const expectedCenterY = boardHeight / 2;
+    const toleranceX = boardWidth * 0.3; 
+    const toleranceY = boardHeight * 0.3;
+
+    // فحص ما إذا كانت الرسمة بعيدة عن المنتصف (مثل الزوايا)
+    if (Math.abs(userCenterX - expectedCenterX) > toleranceX || Math.abs(userCenterY - expectedCenterY) > toleranceY) {
+      message.style.color = "#dc2626";
+      message.textContent = "❌ يرجى كتابة الحرف فوق النموذج الرمادي في منتصف اللوحة بالضبط!";
+      return;
+    }
+
     const info = dictionary[current] || { minStrokes: 1 };
     const requiredStrokes = info.minStrokes;
 
     if (strokes.length < requiredStrokes) {
       message.style.color = "#dc2626";
-      message.textContent = `❌ عدد الحركات غير صحيح. حرف (${current}) يتطلب على الأقل ${requiredStrokes} حركات (ضربات قلم). شاهد خطوات الرسم!`;
+      message.textContent = `❌ عدد الحركات غير صحيح. حرف (${current}) يتطلب على الأقل ${requiredStrokes} حركات.`;
       return;
     }
 
     message.style.color = "#15803d";
-    message.textContent = "🌟 ممتاز جداً! كتابة دقيقة وصحيحة.";
+    message.textContent = "🌟 ممتاز جداً! كتابة دقيقة وفي المكان الصحيح.";
   }
+  // --- نهاية التعديل ---
 
   kind.addEventListener("change", populateLessons);
   lesson.addEventListener("change", updateLesson);
