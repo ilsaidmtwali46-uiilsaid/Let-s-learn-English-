@@ -1,187 +1,94 @@
 :root {
-  --primary: #15803d;
-  --primary-hover: #166534;
-  --secondary: #475569;
-  --bg: #f0fdf4;
-  --panel-bg: #ffffff;
-  --border-color: #bbf7d0;
-  --text-main: #1e293b;
-  --accent: #0284c7;
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --bg-color: #f1f5f9;
+    --text-color: #1e293b;
+    --card-bg: #ffffff;
+    --accent-color: #10b981;
+    --radius: 12px;
 }
 
-*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-body{
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
-  background: var(--bg);
-  text-align: center;
-  margin: 0;
-  padding: 12px;
-  color: var(--text-main);
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
 }
 
-h2 { color: var(--primary); margin: 8px 0; font-size: 1.5rem; }
-p { line-height: 1.5; margin: 6px 0; }
-
-.panel {
-  background: var(--panel-bg);
-  border-radius: 20px;
-  padding: 16px;
-  margin: 12px auto;
-  max-width: 720px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border-color);
+header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.nav-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 12px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding: 4px;
+header p {
+    margin: 0.5rem 0 1rem 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
 
-.tab-btn {
-  background: #e2e8f0;
-  color: #334155;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13px;
-  white-space: nowrap;
-  transition: all 0.2s;
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-.tab-btn.active {
-  background: var(--primary);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.3);
+nav button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 
-.section-content { display: none; }
-.section-content.active { display: block; }
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+nav button:hover {
+    background: white;
+    color: var(--primary-color);
 }
 
-label { font-weight: bold; font-size: 14px; color: #334155; }
-
-select, button, input[type="text"] {
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 15px;
-  border: 1px solid #cbd5e1;
-  outline: none;
-  transition: all 0.2s ease;
+main {
+    max-width: 850px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 
-select, input[type="text"] { background: #fff; }
-
-button {
-  background: var(--primary);
-  color: #fff;
-  border: 0;
-  font-weight: bold;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.2);
+.lab-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
 }
 
-button:hover { background: var(--primary-hover); transform: translateY(-1px); }
-button.secondary { background: var(--secondary); box-shadow: 0 2px 6px rgba(71, 85, 105, 0.2); }
-button.audio-btn { background: var(--accent); box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2); }
-
-#board {
-  position: relative;
-  width: 100%;
-  height: min(55vh, 400px);
-  min-height: 260px;
-  background: #fff;
-  border: 3px solid #86efac;
-  border-radius: 24px;
-  overflow: hidden;
-  touch-action: none;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+button.action-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
 }
 
-canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
-#guide { pointer-events: none; }
-
-#message {
-  font-weight: bold;
-  color: var(--primary);
-  min-height: 28px;
-  margin: 10px 0;
-  font-size: 1rem;
+button.action-btn:hover {
+    background: var(--secondary-color);
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 14px;
-  background: #dcfce7;
-  color: var(--primary);
-  border-radius: 20px;
-  font-size: 0.95rem;
-  font-weight: bold;
-}
-
-.info-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 8px 16px;
-  margin: 8px auto 12px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  font-size: 0.95rem;
-}
-
-.quiz-container { padding: 10px; text-align: center; }
-
-/* تعديل اتجاه الخانات ومربعات الكلمات والحروف من اليسار لليمين */
-.puzzle-slots, .word-slots {
-  display: flex;
-  justify-content: center;
-  direction: ltr;
-  gap: 8px;
-  margin: 20px 0;
-  flex-wrap: wrap;
-}
-
-.slot, .word-slot {
-  min-width: 45px; height: 45px; padding: 0 10px;
-  border: 2px dashed #94a3b8; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem; font-weight: bold; background: #f8fafc; color: #334155;
-  direction: ltr;
-}
-
-.pool-container {
-  display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap;
-  direction: ltr;
-}
-
-.tile, .word-tile {
-  background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;
-  padding: 10px 16px; border-radius: 10px; font-size: 1.1rem; font-weight: bold;
-  cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.score-board {
-  font-size: 1.05rem; font-weight: bold; color: #1e293b; margin-bottom: 10px;
-  background: #f1f5f9; padding: 8px; border-radius: 10px;
+input[type="text"] {
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius);
+    width: calc(100% - 2rem);
+    max-width: 400px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
 }
