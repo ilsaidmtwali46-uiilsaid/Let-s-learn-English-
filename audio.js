@@ -1,11 +1,13 @@
-// محرك الصوت المركزي
-window.speakText = function(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  setTimeout(() => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.8;
-    window.speechSynthesis.speak(utterance);
-  }, 50);
-};
+class VoiceLab {
+    static speak(text, lang = 'en-US') {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // إيقاف أي صوت سابق
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.85; // سرعة هادئة تناسب المتعلمين
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('متصفحك لا يدعم خاصية التحدث الصوتي.');
+        }
+    }
+}
