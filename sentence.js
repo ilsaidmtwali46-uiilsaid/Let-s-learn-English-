@@ -1,73 +1,44 @@
-(() => {
-  const sentencesData = [
-    { sentence: "I love cats", mean: "أنا أحب القطط" },
-    { sentence: "The sun is hot", mean: "الشمس حارة" },
-    { sentence: "I drink milk", mean: "أنا أشرب الحليب" }
-  ];
-  let currentSentenceIdx = 0, sentenceScoreVal = 0;
+const SentenceLab = {
+    exercises: [
+        { correct: "The engineer repairs the television.", words: ["the", "engineer", "television", "repairs", "The"] },
+        { correct: "She is learning software development.", words: ["development", "is", "learning", "software", "She"] },
+        { correct: "We build efficient software systems.", words: ["systems", "efficient", "build", "We", "software"] }
+    ],
+    currentIndex: 0,
 
-  function loadSentenceQuiz() {
-    const item = sentencesData[currentSentenceIdx];
-    document.getElementById("sentenceTotal").textContent = sentencesData.length;
-    document.getElementById("sentenceScore").textContent = sentenceScoreVal;
-    document.getElementById("sentenceMeaning").textContent = item.mean;
-    document.getElementById("sentenceMsg").textContent = "";
+    render(containerId) {
+        const container = document.getElementById(containerId);
+        const current = this.exercises[this.currentIndex];
+        
+        container.innerHTML = `
+            <h2>مختبر بناء وترتيب الجمل</h2>
+            <p>قم بترتيب الكلمات التالية لتكوين جملة إنجليزية صحيحة:</p>
+            <div style="margin: 1.5rem 0; display: flex; gap: 0.50rem; flex-wrap: wrap;" id="word-pool">
+                ${current.words.sort(() => Math.random() - 0.5).map(w => `<button onclick="this.style.opacity=0.5; SentenceLab.selectWord('${w}')" style="padding:0.5rem 1rem; cursor:pointer; border-radius:8px; border:1px solid #ccc;">${w}</button>`).join('')}
+            </div>
+            <p><strong>الجملة المكونة:</strong> <span id="user-sentence" style="color:var(--primary-color);"></span></p>
+            <button class="action-btn" onclick="SentenceLab.check()">تحقق من الإجابة</button>
+            <button class="action-btn" style="background:#64748b; margin-right:0.5rem;" onclick="SentenceLab.render('${containerId}')">إعادة المحاولة</button>
+        `;
+        window.currentBuiltSentence = [];
+    },
 
-    const slotsContainer = document.getElementById("wordSlots");
-    const poolContainer = document.getElementById("wordPool");
-    slotsContainer.innerHTML = ""; poolContainer.innerHTML = "";
+    selectWord(word) {
+        if(!window.currentBuiltSentence) window.currentBuiltSentence = [];
+        window.currentBuiltSentence.push(word);
+        document.getElementById('user-sentence').innerText = window.currentBuiltSentence.join(' ');
+    },
 
-    const words = item.sentence.split(" ");
-    let userWordAnswers = new Array(words.length).fill(null);
-
-    words.forEach(() => {
-      const slot = document.createElement("div");
-      slot.className = "word-slot";
-      slotsContainer.appendChild(slot);
-    });
-
-    const shuffledWords = [...words].sort(() => Math.random() - 0.5);
-    shuffledWords.forEach((word) => {
-      const tile = document.createElement("div");
-      tile.className = "word-tile";
-      tile.textContent = word;
-      tile.onclick = () => {
-        const emptyIdx = userWordAnswers.indexOf(null);
-        if (emptyIdx !== -1) {
-          userWordAnswers[emptyIdx] = word;
-          slotsContainer.children[emptyIdx].textContent = word;
-          tile.style.visibility = "hidden";
+    check() {
+        const userText = (window.currentBuiltSentence || []).join(' ') + '.';
+        const target = this.exercises[this.currentIndex].correct;
+        if(userText.toLowerCase() === target.toLowerCase()) {
+            alert('إجابة صحيحة! أحسنت.');
+            VoiceLab.speak("Great job!");
+            this.currentIndex = (this.currentIndex + 1) % this.exercises.length;
+            this.render('app-container');
+        } else {
+            alert('الترتيب غير صحيح، حاول مرة أخرى.');
         }
-      };
-      poolContainer.appendChild(tile);
-    });
-
-    window.currentSentenceData = { words, userWordAnswers };
-  }
-
-  document.getElementById("checkSentenceBtn").onclick = () => {
-    const dataObj = window.currentSentenceData;
-    if (!dataObj) return;
-    const userSentence = dataObj.userWordAnswers.join(" ");
-    const targetSentence = sentencesData[currentSentenceIdx].sentence;
-    const msg = document.getElementById("sentenceMsg");
-
-    if (userSentence === targetSentence) {
-      msg.style.color = "#15803d";
-      msg.textContent = "🌟 ممتاز جداً! الجملة سليمة.";
-      sentenceScoreVal++;
-      document.getElementById("sentenceScore").textContent = sentenceScoreVal;
-      window.speakText(targetSentence);
-    } else {
-      msg.style.color = "#dc2626";
-      msg.textContent = "❌ ترتيب الكلمات غير صحيح.";
     }
-  };
-
-  document.getElementById("nextSentenceBtn").onclick = () => {
-    currentSentenceIdx = (currentSentenceIdx + 1) % sentencesData.length;
-    loadSentenceQuiz();
-  };
-
-  loadSentenceQuiz();
-})();
+};
