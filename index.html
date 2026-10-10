@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#15803d">
 <title>منصة التدريب التفاعلية</title>
-<!-- استدعاء مكتبات Firebase السحابية -->
+<!-- 1. استدعاء مكتبات Firebase السحابية -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 <link rel="stylesheet" href="style.css">
@@ -43,7 +43,7 @@
 </head>
 <body>
 
-<!-- 🔒 شاشة حماية وتفعيل التطبيق -->
+<!-- 🔒 الدالة الأولى: شاشة حماية وتفعيل التطبيق -->
 <div id="lock-screen">
     <h2>🔒 حماية التطبيق</h2>
     <p>يرجى إدخال كود التفعيل للوصول إلى المنصة:</p>
@@ -62,7 +62,7 @@
 <!-- المحتوى الرئيسي للمنصة -->
 <div id="main-app" class="hidden">
 
-  <!-- لوحة تحكم الأدمن السحابية -->
+  <!-- الدالة الثانية: لوحة تحكم الأدمن السحابية -->
   <div id="admin-dashboard" class="panel admin-panel hidden">
     <h3>⚙️ لوحة تحكم الأدمن السحابية</h3>
     <p>👥 إجمالي المشتركين: <strong id="total-subscribers" style="color: #38bdf8;">0</strong></p>
@@ -74,7 +74,7 @@
 
   <h2>🌟 منصة التدريب التفاعلية</h2>
 
-  <!-- أزرار التنقل بين الأقسام -->
+  <!-- أزرار التنقل بين الأقسام الأصلية -->
   <div class="nav-tabs">
     <button class="tab-btn active" data-target="sec-writing">✍️ تدريب الكتابة</button>
     <button class="tab-btn" data-target="sec-scramble">🔤 ترتيب الحروف</button>
@@ -209,4 +209,121 @@
         تطبيقك المتكامل لتعلم القراءة، الكتابة، الأرقام واللغات بكل يسر وسهولة.
       </p>
 
-      <div style="background: #f8fafc; border
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin: 20px auto; max-width: 400px;">
+        <p style="margin: 4px 0; font-weight: bold; color: #1e293b;">👨‍💻 إشراف وتطوير:</p>
+        <p style="margin: 6px 0; font-size: 1.1rem; color: var(--primary); font-weight: bold;">الأستاذ/ السيد متولي</p>
+      </div>
+
+      <div style="background: #f0fdf4; border: 1px dashed var(--primary); border-radius: 14px; padding: 14px; max-width: 400px; margin: 0 auto;">
+        <p style="font-weight: bold; color: var(--primary); margin-bottom: 8px;">💬 اقتراحات، شكاوى، أو استفسارات؟</p>
+        <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد%20متولي،%20لدي%20اقتراح/استفسار%20بخصوص%20التطبيق:" 
+           target="_blank" 
+           style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #22c55e; color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+          📱 تواصل عبر الواتساب الآن
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.85rem; padding: 8px 16px;">تسجيل الخروج / قفل التطبيق</button>
+  </div>
+</div>
+
+<!-- دوال جافاسكريبت السحابية مرتبة بدقة -->
+<script>
+    // ⚙️ إعدادات فايربيس السحابية لمشروعك
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9ozGAGHkOkK7ojbRLooZeO4dMnceVAsU",
+        authDomain: "englishplatform-63a39.firebaseapp.com",
+        databaseURL: "https://englishplatform-63a39-default-rtdb.firebaseio.com",
+        projectId: "englishplatform-63a39",
+        storageBucket: "englishplatform-63a39.appspot.com",
+        messagingSenderId: "133416052297",
+        appId: "1:133416052297:web:857ba6bd8c956eba70c198"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let currentActiveKey = "12345";
+
+    // 1. دالة التحميل والمزامنة مع قاعدة البيانات السحابية
+    window.onload = function() {
+        db.ref('settings/activationKey').on('value', (snapshot) => {
+            if(snapshot.exists()) currentActiveKey = snapshot.val();
+        });
+
+        db.ref('subscribers_count').on('value', (snapshot) => {
+            let count = snapshot.exists() ? snapshot.val() : 0;
+            document.getElementById('total-subscribers').innerText = count;
+        });
+
+        if(localStorage.getItem("isActivated") === "true") {
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        }
+    }
+
+    // 2. دالة التحقق من كود التفعيل
+    function checkActivationKey() {
+        const userInput = document.getElementById('activation-input').value.trim();
+        if(userInput === currentActiveKey) {
+            if(localStorage.getItem("isActivated") !== "true") {
+                db.ref('subscribers_count').transaction((currentCount) => (currentCount || 0) + 1);
+            }
+            localStorage.setItem("isActivated", "true");
+            alert('تم تفعيل التطبيق بنجاح!');
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        } else {
+            alert('كود التفعيل غير صحيح. يرجى طلبه عبر الواتساب.');
+        }
+    }
+
+    // 3. دالة تسجيل الخروج وقفل التطبيق
+    function logoutApp() {
+        localStorage.removeItem("isActivated");
+        location.reload();
+    }
+
+    // 4. دالة فتح لوحة تحكم الأدمن
+    function openAdminLogin() {
+        const pass = prompt("أدخل كلمة مرور الأدمن:");
+        if(pass === "admin2026") {
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            document.getElementById('current-key-display').innerText = currentActiveKey;
+        } else if(pass !== null) {
+            alert("كلمة المرور غير صحيحة!");
+        }
+    }
+
+    // 5. دالة تحديث كود التفعيل سحابياً
+    function updateActivationKey() {
+        const newKey = document.getElementById('new-key-input').value.trim();
+        if(newKey.length > 0) {
+            db.ref('settings/activationKey').set(newKey).then(() => {
+                currentActiveKey = newKey;
+                document.getElementById('current-key-display').innerText = newKey;
+                alert("تم تحديث كود التفعيل سحابياً بنجاح!");
+                document.getElementById('new-key-input').value = "";
+            });
+        }
+    }
+
+    // 6. دالة إغلاق لوحة الأدمن
+    function closeAdminPanel() {
+        document.getElementById('admin-dashboard').classList.add('hidden');
+    }
+</script>
+
+<!-- ربط ملفات الأقسام الأصلية الخاصة بك -->
+<script src="audio.js"></script>
+<script src="writing.js"></script>
+<script src="spelling.js"></script>
+<script src="sentence.js"></script>
+<script src="numbers.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
