@@ -1,314 +1,236 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة Let's Learn English التعليمية المتقدمة</title>
-    <!-- استدعاء مكتبة Firebase الأساسية -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-    <style>
-        :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #38bdf8;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 15px;
-            direction: rtl;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        .hidden { display: none !important; }
-        
-        #lock-screen {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 50px auto;
-        }
-        input[type="text"], input[type="password"], select {
-            width: 85%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            text-align: center;
-        }
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s;
-            margin: 5px;
-        }
-        button:hover { background-color: #4338ca; }
-
-        header { text-align: center; margin-bottom: 20px; }
-        header h2 { color: var(--primary-color); font-size: 1.8rem; }
-        
-        /* لوحة التحكم الرئيسية (مفاتيح الأقسام) */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .section-btn {
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            color: white;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-            border: none;
-            width: 100%;
-        }
-        .section-btn:hover { transform: translateY(-2px); }
-
-        section.content-section {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        }
-
-        .back-btn {
-            background-color: #64748b;
-            margin-bottom: 15px;
-            width: auto;
-        }
-        .back-btn:hover { background-color: #475569; }
-
-        .score-board { font-weight: bold; color: var(--primary-color); margin-bottom: 10px; font-size: 1.1rem; }
-        .feedback { margin-top: 10px; font-weight: bold; }
-        .feedback.correct { color: var(--success-color); }
-        .feedback.incorrect { color: var(--error-color); }
-
-        .interactive-box {
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-
-        .whatsapp-box {
-            text-align: center;
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            color: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .whatsapp-box a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        
-        .admin-box {
-            background: #1e293b;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#15803d">
+<title>Interactive Training Platform</title>
+<!-- استدعاء مكتبات Firebase السحابية -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* تنسيقات شاشة الحماية ولوحة التحكم */
+  #lock-screen {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 80px auto;
+  }
+  input[type="text"], input[type="password"] {
+      width: 85%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-align: center;
+  }
+  .hidden { display: none !important; }
+  .admin-panel {
+      background: #1e293b;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      text-align: left;
+      direction: ltr;
+  }
+</style>
 </head>
 <body>
 
-<!-- 1. شاشة قفل وتفعيل التطبيق -->
+<!-- 🔒 شاشة حماية وتفعيل التطبيق -->
 <div id="lock-screen">
-    <h2>🔒 منصة Let's Learn English</h2>
-    <p>أدخل كود التفعيل للوصول إلى الأقسام التعليمية</p>
-    <input type="text" id="activation-input" placeholder="أدخل كود التفعيل">
+    <h2>🔒 App Protection</h2>
+    <p>Please enter the activation key to access the platform:</p>
+    <input type="text" id="activation-input" placeholder="Enter activation key">
     <br>
-    <button onclick="checkActivationKey()">تحقق ودخول</button>
+    <button onclick="checkActivationKey()">Verify & Login</button>
     <br><br>
-    <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد،%20أريد%20كود%20التفعيل%20الخاص%20بمنصة%20تعلم%20الإنجليزية" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none;">
-        📱 طلب كود التفعيل عبر الواتساب
+    <a href="https://wa.me/201115197980?text=Hello%20Mr.%20El-Sayed,%20I%20want%20the%20activation%20key" target="_blank" style="color: #22c55e; font-weight: bold; text-decoration: none;">
+        📱 Request Key via WhatsApp
     </a>
-    <div style="margin-top: 15px;">
-        <button onclick="openAdminLogin()" style="background: transparent; color: #64748b; font-size: 0.8rem;">دخول الأدمن</button>
+    <div style="margin-top: 20px;">
+        <button onclick="openAdminLogin()" style="background: transparent; color: #64748b; font-size: 0.8rem; border: none; cursor: pointer;">Admin Login</button>
     </div>
 </div>
 
 <!-- المحتوى الرئيسي للمنصة -->
-<div id="main-app" class="container hidden">
-    
-    <header>
-        <h2>🌟 منصة Let's Learn English التعليمية</h2>
-        <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
-        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">إغلاق وقفل التطبيق</button>
-    </header>
+<div id="main-app" class="hidden">
 
-    <!-- لوحة التحكم الرئيسية (مفاتيح اختيار الأقسام) -->
-    <div id="dashboard-menu" class="container">
-        <h3 style="text-align: center; margin-bottom: 20px;">📂 لوحة التحكم الرئيسية - اختر قسماً للبدء:</h3>
-        
-        <div class="dashboard-grid">
-            <button class="section-btn" onclick="showSection('sec-letters')">🔤 1. تعليم الأحرف (كتابة، نطق، ترتيب المكان)</button>
-            <button class="section-btn" onclick="showSection('sec-words')">📖 2. قسم الكلمات (كتابة، نطق، ترتيب الحروف)</button>
-            <button class="section-btn" onclick="showSection('sec-sentences')">📝 3. الجمل الكاملة (كتابة، نطق، وترتيب)</button>
-            <button class="section-btn" onclick="showSection('sec-chat')">💬 4. محادثة جديدة مع التطبيق (كتابة ونطق)</button>
-            <button class="section-btn" onclick="showSection('sec-numbers')">🔢 5. تعليم الأرقام والتركيب (رقمين، 3، 4 أرقام)</button>
-            <button class="section-btn" onclick="showSection('sec-math')">➕ 6. المسائل الحسابية (جمع، طرح، ضرب، قسمة)</button>
-            <button class="section-btn" onclick="showSection('sec-tests')">📊 7. الاختبارات وتحديد المستوى والتقييم</button>
-        </div>
+  <!-- لوحة تحكم الأدمن السحابية -->
+  <div id="admin-dashboard" class="panel admin-panel hidden">
+    <h3>⚙️ Admin Cloud Dashboard</h3>
+    <p>👥 Total Subscribers: <strong id="total-subscribers" style="color: #38bdf8;">0</strong></p>
+    <p>🔑 Current Activation Key: <strong id="current-key-display">12345</strong></p>
+    <input type="text" id="new-key-input" placeholder="New activation key">
+    <button onclick="updateActivationKey()">Save New Key</button>
+    <button onclick="closeAdminPanel()" style="background: #64748b; margin-top: 5px;">Close Panel</button>
+  </div>
 
-        <!-- لوحة تحكم الأدمن السحابية داخل القائمة -->
-        <div id="admin-panel" class="admin-box hidden">
-            <h4>⚙️ لوحة تحكم الأدمن السحابية</h4>
-            <p>👥 إجمالي المشتركين المفعلين: <strong id="total-subscribers" style="color: #38bdf8; font-size: 1.3rem;">0</strong></p>
-            <p>🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
-            <input type="text" id="new-key-input" placeholder="تغيير كود التفعيل لكل المستخدمين">
-            <button onclick="updateActivationKey()">حفظ الكود الجديد</button>
-        </div>
+  <h2>🌟 Interactive Training Platform</h2>
+
+  <!-- أزرار التنقل بين الأقسام -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" data-target="sec-writing">✍️ Writing</button>
+    <button class="tab-btn" data-target="sec-scramble">🔤 Letters Scramble</button>
+    <button class="tab-btn" data-target="sec-sentence">📝 Sentences</button>
+    <button class="tab-btn" data-target="sec-numbers">🔢 Numbers</button>
+    <button class="tab-btn" data-target="sec-contact">📞 Contact Us</button>
+  </div>
+
+  <!-- القسم الأول: الكتابة والرسم -->
+  <section id="sec-writing" class="section-content active">
+    <div class="panel">
+      <div class="controls">
+        <label>Kind:
+          <select id="kind">
+            <option value="letters">Uppercase Letters</option>
+            <option value="lowercase">Lowercase Letters</option>
+            <option value="numbers">Numbers</option>
+            <option value="words">Words</option>
+          </select>
+        </label>
+        <label>Lesson:
+          <select id="lesson"></select>
+        </label>
+        <button id="speakBtn" class="audio-btn">🔊 Listen</button>
+      </div>
+      <div class="controls">
+        <label>Mode:
+          <select id="learningMode">
+            <option value="watch">Watch Drawing Steps</option>
+            <option value="practice">Practice Yourself</option>
+          </select>
+        </label>
+      </div>
     </div>
 
-    <!-- 1. قسم تعليم الأحرف -->
-    <section id="sec-letters" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>🔤 1. تعليم الأحرف (كتابة، نطق وترتيب مكان الحرف)</h3>
-        <div class="interactive-box">
-            <div class="score-board">الحرف المختار: <span id="current-letter-disp">A</span> - المعنى: <span id="letter-meaning-disp">Apple (تفاحة)</span></div>
-            <button onclick="speakText(document.getElementById('current-letter-disp').innerText)">استمع لنطق الحرف 🔊</button>
-            <div style="margin-top: 15px;">
-                <button onclick="selectLetter('A', 'Apple (تفاحة)')">A</button>
-                <button onclick="selectLetter('B', 'Ball (كرة)')">B</button>
-                <button onclick="selectLetter('C', 'Cat (قطة)')">C</button>
-                <button onclick="selectLetter('D', 'Dog (كلب)')">D</button>
-            </div>
-            <p style="margin-top: 15px; font-weight: bold;">تدريب ترتيب مكان الحرف: اضغط على الحرف المناسب لوضعه في الفراغ.</p>
-            <div style="font-size: 1.5rem; letter-spacing: 5px; font-weight: bold; margin: 10px 0;">_ _ T</div>
-            <div>
-                <button onclick="checkLetterSlot('C')">C</button>
-                <button onclick="checkLetterSlot('A')">A</button>
-            </div>
-            <div id="letter-slot-fb" class="feedback"></div>
-        </div>
-    </section>
+    <div class="panel">
+      <div id="currentTitle" class="badge">Training on: A</div>
+      <div class="info-card">
+        <div>🗣️ <strong>Pronunciation:</strong> <span id="pronText">-</span></div>
+        <div>📖 <strong>Meaning:</strong> <span id="meanText">-</span></div>
+      </div>
 
-    <!-- 2. قسم الكلمات -->
-    <section id="sec-words" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>📖 2. قسم الكلمات (كتابة ونطق وإعادة ترتيب حروف الكلمات)</h3>
-        <div class="interactive-box">
-            <p>رتب حروف الكلمة التالية لتصبح صحيحة: <strong style="font-size: 1.3rem; letter-spacing: 3px;">T A C</strong></p>
-            <button onclick="speakText('Cat')">استمع لنطق الكلمة الصحيحة 🔊</button>
-            <div style="margin-top: 10px;">
-                <button onclick="verifyWord('CAT', 'C')">C</button>
-                <button onclick="verifyWord('CAT', 'A')">A</button>
-                <button onclick="verifyWord('CAT', 'T')">T</button>
-            </div>
-            <div id="word-fb" class="feedback"></div>
-        </div>
-    </section>
+      <div id="board">
+        <canvas id="guide"></canvas>
+        <canvas id="draw"></canvas>
+      </div>
+      <p id="message">Press «Watch Drawing Steps» to see how it's drawn.</p>
+      
+      <div class="controls">
+        <button id="showSteps">▶ Watch Steps</button>
+        <button id="undo" class="secondary">↶ Undo</button>
+        <button id="clear" class="secondary">🗑 Clear</button>
+        <button id="check">✓ Check</button>
+        <button id="next">Next ➜</button>
+      </div>
+    </div>
+  </section>
 
-    <!-- 3. قسم الجمل الكاملة -->
-    <section id="sec-sentences" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>📝 3. قسم الجمل الكاملة (كتابة ونطق وترتيب الجملة)</h3>
-        <div class="interactive-box">
-            <p>أعد ترتيب الكلمات لتكوين جملة صحيحة: <strong>[is - He - teacher - a]</strong></p>
-            <button onclick="speakText('He is a teacher')">استمع للجملة كاملة 🔊</button>
-            <div style="margin-top: 10px;">
-                <button onclick="verifySentence('He is a teacher')">تحقق من الترتيب الصحيح</button>
-            </div>
-            <div id="sent-fb" class="feedback"></div>
-        </div>
-    </section>
+  <!-- القسم الثاني: ترتيب الحروف -->
+  <section id="sec-scramble" class="section-content">
+    <div class="panel quiz-container">
+      <div class="score-board">⭐ Score: <span id="spellingScore">0</span> / <span id="spellingTotal">0</span></div>
+      <div class="badge">Arrange letters to form the correct word</div>
+      <p id="scrambleMeaning" style="font-size: 1.1rem; color: #0284c7; font-weight: bold; margin: 10px 0;">-</p>
+      
+      <div class="puzzle-slots" id="puzzleSlots"></div>
+      <div class="pool-container" id="puzzlePool"></div>
 
-    <!-- 4. قسم المحادثة -->
-    <section id="sec-chat" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>💬 4. محادثة جديدة مع التطبيق (كتابة ونطق)</h3>
-        <div class="interactive-box">
-            <p>🤖 <strong>التطبيق يقول:</strong> Hello! How are you doing today?</p>
-            <button onclick="speakText('Hello! How are you doing today?')">استمع للروبوت 🔊</button>
-            <p style="margin-top: 15px;">اختر الرد المناسب:</p>
-            <button onclick="chatAnswer(true)">I am doing great, thank you!</button>
-            <button onclick="chatAnswer(false)">Blue table.</button>
-            <div id="chat-fb" class="feedback"></div>
-        </div>
-    </section>
+      <div class="controls" style="margin-top: 15px;">
+        <button id="checkSpellingBtn">✓ Check</button>
+        <button id="nextSpellingBtn" class="secondary">Next ➜</button>
+      </div>
+      <p id="spellingMsg" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+  </section>
 
-    <!-- 5. قسم الأرقام والتركيب -->
-    <section id="sec-numbers" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>🔢 5. تعليم الأرقام والتركيب (رقمين، ثلاثة، وأربعة أرقام)</h3>
-        <div class="interactive-box">
-            <p>تدريب قراءة ونطق الأرقام المركبة:</p>
-            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">رقمين: 45 (Forty-five)</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">ثلاثة أرقام: 389 (Three hundred eighty-nine)</div>
-            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">أربعة أرقام: 7412 (Seven thousand four hundred twelve)</div>
-            <button style="margin-top: 15px;" onclick="speakText('Seven thousand four hundred twelve')">استمع لنطق الرقم الأربعة منازل 🔊</button>
-        </div>
-    </section>
+  <!-- القسم الثالث: ترتيب الجمل -->
+  <section id="sec-sentence" class="section-content">
+    <div class="panel quiz-container">
+      <div class="score-board">🏆 Score: <span id="sentenceScore">0</span> / <span id="sentenceTotal">0</span></div>
+      <div class="badge">Arrange words to form a correct sentence</div>
+      <p style="font-size: 0.95rem; color: #475569; margin: 8px 0;">Meaning: <span id="sentenceMeaning" style="font-weight: bold; color: var(--primary);">-</span></p>
 
-    <!-- 6. المسائل الحسابية -->
-    <section id="sec-math" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>➕ 6. المسائل الحسابية (جمع، طرح، ضرب، قسمة)</h3>
-        <div class="interactive-box">
-            <p>حل المسألة التالية: <strong>24 × 5 = ?</strong></p>
-            <input type="text" id="math-input" placeholder="اكتب الناتج هنا">
-            <button onclick="checkMathResult(120)">تحقق من الحل</button>
-            <div id="math-fb" class="feedback"></div>
-        </div>
-    </section>
+      <div class="word-slots" id="wordSlots"></div>
+      <div class="pool-container" id="wordPool"></div>
 
-    <!-- 7. الاختبارات وتحديد المستوى -->
-    <section id="sec-tests" class="content-section hidden">
-        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>📊 7. الاختبارات وتحديد المستوى والتقييم العلمي</h3>
-        <div class="interactive-box">
-            <p>اختر مستوى الاختبار المناسب:</p>
-            <select id="test-level">
-                <option value="beginner">المستوى الأول: مبتدئ (Beginner)</option>
-                <option value="intermediate">المستوى الثاني: متوسط (Intermediate)</option>
-                <option value="advanced">المستوى الثالث: متقدم (Advanced)</option>
-            </select>
-            <br>
-            <button onclick="startLevelTest()">بدء الاختبار والتقييم</button>
-            <div id="test-result-box" class="feedback" style="margin-top: 15px; font-size: 1.1rem;"></div>
-        </div>
-    </section>
+      <div class="controls" style="margin-top: 15px;">
+        <button id="checkSentenceBtn">✓ Check</button>
+        <button id="nextSentenceBtn" class="secondary">Next ➜</button>
+      </div>
+      <p id="sentenceMsg" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+  </section>
 
-    <!-- قسم الدعاية والتواصل -->
-    <section class="whatsapp-box">
-        <h3>🌟 حول التطبيق والدعاية</h3>
-        <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
-        <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد" target="_blank">
-            📱 تواصل عبر الواتساب (رقم: 201115197980+)
+  <!-- القسم الرابع: تعليم الأرقام -->
+  <section id="sec-numbers" class="section-content">
+    <div class="panel quiz-container">
+      <div class="score-board">🔢 Numbers Score: <span id="numScore">0</span> / <span id="numTotal">0</span></div>
+      <div class="badge">Numbers Training, Pronunciation & Assembly</div>
+      
+      <div class="info-card" style="margin: 15px auto;">
+        <div>🔢 <strong>Number:</strong> <span id="numDisplay" style="font-size: 1.4rem; color: var(--primary);">123</span></div>
+        <div>🗣️ <strong>Pronunciation:</strong> <span id="numPron">One Hundred Twenty Three</span></div>
+      </div>
+
+      <div class="controls">
+        <button id="speakNumBtn" class="audio-btn">🔊 Listen to Number</button>
+        <button id="nextNumBtn" class="secondary">New Number ➜</button>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+      
+      <div class="badge" style="background: #e0f2fe; color: #0369a1;">Scrambled Numbers Puzzle</div>
+      <p id="numPuzzleMean" style="font-weight: bold; margin: 10px 0; color: var(--secondary);">-</p>
+      
+      <div class="puzzle-slots" id="numPuzzleSlots"></div>
+      <div class="pool-container" id="numPuzzlePool"></div>
+
+      <div class="controls" style="margin-top: 15px;">
+        <button id="checkNumPuzzleBtn">✓ Check Order</button>
+      </div>
+      <p id="numPuzzleMsg" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+  </section>
+
+  <!-- القسم الخامس: اتصل بنا والدعاية -->
+  <section id="sec-contact" class="section-content">
+    <div class="panel" style="text-align: center; padding: 24px;">
+      <div class="badge">🌟 About & Advertising</div>
+      <h3 style="color: var(--primary); margin: 12px 0;">Interactive Training Platform</h3>
+      <p style="color: var(--secondary); font-size: 0.95rem; line-height: 1.6;">
+        Your integrated application to learn reading, writing, numbers, and languages easily.
+      </p>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin: 20px auto; max-width: 400px;">
+        <p style="margin: 4px 0; font-weight: bold; color: #1e293b;">👨‍💻 Supervision & Development:</p>
+        <p style="margin: 6px 0; font-size: 1.1rem; color: var(--primary); font-weight: bold;">Prof. El-Sayed Metwali</p>
+      </div>
+
+      <div style="background: #f0fdf4; border: 1px dashed var(--primary); border-radius: 14px; padding: 14px; max-width: 400px; margin: 0 auto;">
+        <p style="font-weight: bold; color: var(--primary); margin-bottom: 8px;">💬 Suggestions, complaints or inquiries?</p>
+        <a href="https://wa.me/201115197980?text=Hello%20Mr.%20El-Sayed%20Metwali,%20I%20have%20an%20inquiry%20regarding%20the%20app:" 
+           target="_blank" 
+           style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #22c55e; color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+          📱 Contact via WhatsApp Now
         </a>
-    </section>
+      </div>
+    </div>
+  </section>
 
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.85rem; padding: 8px 16px;">Logout / Lock App</button>
+  </div>
 </div>
 
+<!-- ربط السكربتات ومن ضمنها إعدادات الفايربيس ومنطق الحماية -->
 <script>
     // ⚙️ إعدادات فايربيس السحابية لمشروعك
     const firebaseConfig = {
@@ -348,11 +270,11 @@
                 db.ref('subscribers_count').transaction((currentCount) => (currentCount || 0) + 1);
             }
             localStorage.setItem("isActivated", "true");
-            alert('تم تفعيل التطبيق بنجاح!');
+            alert('App activated successfully!');
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         } else {
-            alert('كود التفعيل غير صحيح.');
+            alert('Incorrect activation key. Please request it via WhatsApp.');
         }
     }
 
@@ -361,28 +283,15 @@
         location.reload();
     }
 
-    // التنقل بين الأقسام من لوحة التحكم
-    function showSection(sectionId) {
-        document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
-        document.getElementById('dashboard-menu').classList.add('hidden');
-        document.getElementById(sectionId).classList.remove('hidden');
-    }
-
-    function goHome() {
-        document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
-        document.getElementById('dashboard-menu').classList.remove('hidden');
-    }
-
-    // دوال الأدمن
     function openAdminLogin() {
-        const pass = prompt("أدخل كلمة مرور الأدمن:");
+        const pass = prompt("Enter admin password:");
         if(pass === "admin2026") {
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
             document.getElementById('current-key-display').innerText = currentActiveKey;
         } else if(pass !== null) {
-            alert("كلمة المرور غير صحيحة!");
+            alert("Incorrect password!");
         }
     }
 
@@ -392,89 +301,22 @@
             db.ref('settings/activationKey').set(newKey).then(() => {
                 currentActiveKey = newKey;
                 document.getElementById('current-key-display').innerText = newKey;
-                alert("تم تحديث كود التفعيل لكل المستخدمين سحابياً!");
+                alert("Activation key updated globally on cloud!");
                 document.getElementById('new-key-input').value = "";
             });
         }
     }
 
-    // نطق الصوت
-    function speakText(text) {
-        if ('speechSynthesis' in window) {
-            const ut = new SpeechSynthesisUtterance(text);
-            ut.lang = 'en-US';
-            window.speechSynthesis.speak(ut);
-        }
-    }
-
-    // تفاعلات الأقسام
-    function selectLetter(l, m) {
-        document.getElementById('current-letter-disp').innerText = l;
-        document.getElementById('letter-meaning-disp').innerText = m;
-        speakText(l);
-    }
-
-    function checkLetterSlot(char) {
-        const fb = document.getElementById('letter-slot-fb');
-        if(char === 'C') {
-            fb.innerText = "إجابة صحيحة! تم وضع الحرف في مكانه بنجاح 🎉";
-            fb.className = "feedback correct";
-        } else {
-            fb.innerText = "حاول مرة أخرى لاختيار الحرف المناسب.";
-            fb.className = "feedback incorrect";
-        }
-    }
-
-    function verifyWord(word, char) {
-        const fb = document.getElementById('word-fb');
-        if(char === 'C') {
-            fb.innerText = "أحسنت! ترتيب الحروف صحيح (CAT) 🌟";
-            fb.className = "feedback correct";
-            speakText("Cat");
-        } else {
-            fb.innerText = "حرف خاطئ، حاول بـ C للبداية.";
-            fb.className = "feedback incorrect";
-        }
-    }
-
-    function verifySentence(sentence) {
-        const fb = document.getElementById('sent-fb');
-        fb.innerText = "ترتيب الجملة صحيح تماماً: He is a teacher 👏";
-        fb.className = "feedback correct";
-        speakText(sentence);
-    }
-
-    function chatAnswer(isCorrect) {
-        const fb = document.getElementById('chat-fb');
-        if(isCorrect) {
-            fb.innerText = "إجابة موفقة ورائعة في المحادثة! 👍";
-            fb.className = "feedback correct";
-            speakText("I am doing great, thank you!");
-        } else {
-            fb.innerText = "إجابة غير مناسبة للسياق.";
-            fb.className = "feedback incorrect";
-        }
-    }
-
-    function checkMathResult(correctVal) {
-        const val = document.getElementById('math-input').value.trim();
-        const fb = document.getElementById('math-fb');
-        if(parseInt(val) === correctVal) {
-            fb.innerText = "الناتج صحيح 100%! أحسنت 🏆";
-            fb.className = "feedback correct";
-        } else {
-            fb.innerText = "الناتج غير صحيح، حاول مجدداً.";
-            fb.className = "feedback incorrect";
-        }
-    }
-
-    function startLevelTest() {
-        const level = document.getElementById('test-level').value;
-        const resBox = document.getElementById('test-result-box');
-        resBox.innerText = `تم تقييم مستواك بنجاح في (${level.toUpperCase()}). أنت جاهز للانتقال للمرحلة التالية بتقدير ممتاز! ⭐`;
-        resBox.className = "feedback correct";
+    function closeAdminPanel() {
+        document.getElementById('admin-dashboard').classList.add('hidden');
     }
 </script>
 
+<script src="audio.js"></script>
+<script src="writing.js"></script>
+<script src="spelling.js"></script>
+<script src="sentence.js"></script>
+<script src="numbers.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
