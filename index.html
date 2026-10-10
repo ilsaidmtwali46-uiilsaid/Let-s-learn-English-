@@ -63,7 +63,7 @@
         header { text-align: center; margin-bottom: 20px; }
         header h2 { color: var(--primary-color); font-size: 1.8rem; }
         
-        /* لوحة التحكم الرئيسية */
+        /* لوحة التحكم الرئيسية (مفاتيح الأقسام) */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -82,6 +82,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.2s;
             border: none;
+            width: 100%;
         }
         .section-btn:hover { transform: translateY(-2px); }
 
@@ -96,8 +97,9 @@
         .back-btn {
             background-color: #64748b;
             margin-bottom: 15px;
-            width: 100%;
+            width: auto;
         }
+        .back-btn:hover { background-color: #475569; }
 
         .score-board { font-weight: bold; color: var(--primary-color); margin-bottom: 10px; font-size: 1.1rem; }
         .feedback { margin-top: 10px; font-weight: bold; }
@@ -138,7 +140,7 @@
 </head>
 <body>
 
-<!-- شاشة قفل وتفعيل التطبيق -->
+<!-- 1. شاشة قفل وتفعيل التطبيق -->
 <div id="lock-screen">
     <h2>🔒 منصة Let's Learn English</h2>
     <p>أدخل كود التفعيل للوصول إلى الأقسام التعليمية</p>
@@ -168,11 +170,11 @@
         <h3 style="text-align: center; margin-bottom: 20px;">📂 لوحة التحكم الرئيسية - اختر قسماً للبدء:</h3>
         
         <div class="dashboard-grid">
-            <button class="section-btn" onclick="showSection('sec-letters')">🔤 1. تعليم الأحرف (كتابة، نطق، ترتيب)</button>
-            <button class="section-btn" onclick="showSection('sec-words')">📖 2. قسم الكلمات (كتابة، نطق، ترتيب)</button>
-            <button class="section-btn" onclick="showSection('sec-sentences')">📝 3. الجمل الكاملة (كتابة وترتيب)</button>
-            <button class="section-btn" onclick="showSection('sec-chat')">💬 4. محادثة جديدة مع التطبيق</button>
-            <button class="section-btn" onclick="showSection('sec-numbers')">🔢 5. الأرقام والتركيب (حتى 4 أرقام)</button>
+            <button class="section-btn" onclick="showSection('sec-letters')">🔤 1. تعليم الأحرف (كتابة، نطق، ترتيب المكان)</button>
+            <button class="section-btn" onclick="showSection('sec-words')">📖 2. قسم الكلمات (كتابة، نطق، ترتيب الحروف)</button>
+            <button class="section-btn" onclick="showSection('sec-sentences')">📝 3. الجمل الكاملة (كتابة، نطق، وترتيب)</button>
+            <button class="section-btn" onclick="showSection('sec-chat')">💬 4. محادثة جديدة مع التطبيق (كتابة ونطق)</button>
+            <button class="section-btn" onclick="showSection('sec-numbers')">🔢 5. تعليم الأرقام والتركيب (رقمين، 3، 4 أرقام)</button>
             <button class="section-btn" onclick="showSection('sec-math')">➕ 6. المسائل الحسابية (جمع، طرح، ضرب، قسمة)</button>
             <button class="section-btn" onclick="showSection('sec-tests')">📊 7. الاختبارات وتحديد المستوى والتقييم</button>
         </div>
@@ -190,7 +192,7 @@
     <!-- 1. قسم تعليم الأحرف -->
     <section id="sec-letters" class="content-section hidden">
         <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>🔤 1. تعليم الأحرف (كتابة ونطق وتدريب المكان)</h3>
+        <h3>🔤 1. تعليم الأحرف (كتابة، نطق وترتيب مكان الحرف)</h3>
         <div class="interactive-box">
             <div class="score-board">الحرف المختار: <span id="current-letter-disp">A</span> - المعنى: <span id="letter-meaning-disp">Apple (تفاحة)</span></div>
             <button onclick="speakText(document.getElementById('current-letter-disp').innerText)">استمع لنطق الحرف 🔊</button>
@@ -200,24 +202,22 @@
                 <button onclick="selectLetter('C', 'Cat (قطة)')">C</button>
                 <button onclick="selectLetter('D', 'Dog (كلب)')">D</button>
             </div>
-            <p style="margin-top: 15px; font-weight: bold;">تدريب ترتيب مكان الحرف: اضغط على الحرف ثم حدد مكانه الصحيح.</p>
-            <div id="letter-slot-game">
-                <span style="font-size: 1.5rem; letter-spacing: 5px; font-weight: bold;" id="target-slot">_ _ T</span>
-                <div style="margin-top: 10px;">
-                    <button onclick="checkLetterSlot('C')">C</button>
-                    <button onclick="checkLetterSlot('A')">A</button>
-                </div>
-                <div id="letter-slot-fb" class="feedback"></div>
+            <p style="margin-top: 15px; font-weight: bold;">تدريب ترتيب مكان الحرف: اضغط على الحرف المناسب لوضعه في الفراغ.</p>
+            <div style="font-size: 1.5rem; letter-spacing: 5px; font-weight: bold; margin: 10px 0;">_ _ T</div>
+            <div>
+                <button onclick="checkLetterSlot('C')">C</button>
+                <button onclick="checkLetterSlot('A')">A</button>
             </div>
+            <div id="letter-slot-fb" class="feedback"></div>
         </div>
     </section>
 
     <!-- 2. قسم الكلمات -->
     <section id="sec-words" class="content-section hidden">
         <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>📖 2. قسم الكلمات (كتابة ونطق وإعادة ترتيب الحروف)</h3>
+        <h3>📖 2. قسم الكلمات (كتابة ونطق وإعادة ترتيب حروف الكلمات)</h3>
         <div class="interactive-box">
-            <p>رتب حروف الكلمة التالية لتصبح صحيحة: <strong style="font-size: 1.3rem; letter-spacing: 3px;" id="scrambled-word">T A C</strong></p>
+            <p>رتب حروف الكلمة التالية لتصبح صحيحة: <strong style="font-size: 1.3rem; letter-spacing: 3px;">T A C</strong></p>
             <button onclick="speakText('Cat')">استمع لنطق الكلمة الصحيحة 🔊</button>
             <div style="margin-top: 10px;">
                 <button onclick="verifyWord('CAT', 'C')">C</button>
@@ -259,13 +259,13 @@
     <!-- 5. قسم الأرقام والتركيب -->
     <section id="sec-numbers" class="content-section hidden">
         <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
-        <h3>🔢 5. تعليم الأرقام والتركيب (رقمين، 3، و4 أرقام)</h3>
+        <h3>🔢 5. تعليم الأرقام والتركيب (رقمين، ثلاثة، وأربعة أرقام)</h3>
         <div class="interactive-box">
             <p>تدريب قراءة ونطق الأرقام المركبة:</p>
-            <div style="font-size: 1.6rem; font-weight: bold; color: var(--primary-color);">رقمين: 45 (Forty-five)</div>
-            <div style="font-size: 1.6rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">ثلاثة أرقام: 389 (Three hundred eighty-nine)</div>
-            <div style="font-size: 1.6rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">أربعة أرقام: 7412 (Seven thousand four hundred twelve)</div>
-            <button style="margin-top: 15px;" onclick="speakText('Seven thousand four hundred twelve')">استمع لنطق الرقم الأكبر 🔊</button>
+            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">رقمين: 45 (Forty-five)</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">ثلاثة أرقام: 389 (Three hundred eighty-nine)</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-top: 5px;">أربعة أرقام: 7412 (Seven thousand four hundred twelve)</div>
+            <button style="margin-top: 15px;" onclick="speakText('Seven thousand four hundred twelve')">استمع لنطق الرقم الأربعة منازل 🔊</button>
         </div>
     </section>
 
