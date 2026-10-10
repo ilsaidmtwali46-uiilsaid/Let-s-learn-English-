@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التدريب التفاعلية - محمية</title>
+    <title>منصة التدريب التفاعلية - محمية وسحابية</title>
+    <!-- استدعاء مكتبة Firebase الأساسية -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -22,13 +26,9 @@
             padding: 20px;
             direction: rtl;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
         .hidden { display: none !important; }
         
-        /* شاشة قفل التفعيل */
         #lock-screen {
             background: white;
             padding: 30px;
@@ -85,7 +85,6 @@
             display: inline-block;
             margin-top: 10px;
         }
-        /* لوحة الأدمن */
         .admin-panel {
             background: #1e293b;
             color: white;
@@ -93,14 +92,22 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
+        .stat-box {
+            background: #334155;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: inline-block;
+            width: 45%;
+        }
     </style>
 </head>
 <body>
 
-<!-- شاشة التحقق والتفعيل -->
+<!-- شاشة التفعيل -->
 <div id="lock-screen">
     <h2>🔒 التطبيق محمي برمز تفعيل</h2>
-    <p>للحصول على كود التفعيل الخاص بك، تواصل معنا عبر الواتساب</p>
+    <p>أدخل كود التفعيل للحصول على صلاحية الدخول للمنصة</p>
     <input type="text" id="activation-input" placeholder="أدخل كود التفعيل هنا">
     <br>
     <button onclick="checkActivationKey()">تحقق ودخول</button>
@@ -108,31 +115,39 @@
     <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد،%20أريد%20كود%20التفعيل%20الخاص%20بمنصة%20تعلم%20الإنجليزية" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none;">
         📱 طلب كود التفعيل عبر الواتساب
     </a>
-    <div style="margin-top: 20px; font-size: 0.85rem;">
+    <div style="margin-top: 20px;">
         <button onclick="openAdminLogin()" style="background: transparent; color: #64748b; font-size: 0.8rem;">دخول الأدمن</button>
     </div>
 </div>
 
-<!-- المحتوى الأساسي للمنصة (يظهر بعد التفعيل) -->
+<!-- المحتوى الأساسي -->
 <div id="main-app" class="container hidden">
     
-    <!-- لوحة تحكم الأدمن (تظهر فقط للأدمن) -->
+    <!-- لوحة تحكم الأدمن -->
     <div id="admin-dashboard" class="admin-panel hidden">
-        <h3>⚙️ لوحة تحكم الأدمن</h3>
-        <p>مرحباً بك يا أستاذ السيد. يمكنك من هنا التحكم بالإعدادات:</p>
-        <p>🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
+        <h3>⚙️ لوحة تحكم الأدمن (سحابية مباشرة)</h3>
+        <p>مرحباً بك يا أستاذ السيد.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <div class="stat-box">
+                👥 إجمالي المشتركين: <br><strong id="total-subscribers" style="font-size: 1.5rem; color: #38bdf8;">0</strong>
+            </div>
+        </div>
+
+        <p style="margin-top: 15px;">🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
         <input type="text" id="new-key-input" placeholder="تغيير كود التفعيل">
         <button onclick="updateActivationKey()">حفظ الكود الجديد</button>
-        <button onclick="closeAdminPanel()" style="background-color: #64748b;">إغلاق اللوحة</button>
+        <br>
+        <button onclick="closeAdminPanel()" style="background-color: #64748b; margin-top: 10px;">إغلاق اللوحة والخروج</button>
     </div>
 
     <header>
         <h2>🌟 منصة التدريب التفاعلية</h2>
         <p>تطبيقك المتكامل لتعلم القراءة، الكتابة، والأرقام بكل يسر وسهولة</p>
-        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">إلغاء التفعيل / قفل التطبيق</button>
+        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">قفل التطبيق / تسجيل خروج</button>
     </header>
 
-    <!-- قسم الحروف والنطق -->
+    <!-- أقسام التطبيق -->
     <section>
         <div class="score-board">تدريب على الحرف: <span id="current-letter">A</span></div>
         <div>
@@ -146,7 +161,6 @@
         </div>
     </section>
 
-    <!-- قسم الدعاية والتواصل -->
     <section class="whatsapp-box">
         <h3>🌟 حول التطبيق والدعاية</h3>
         <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
@@ -157,23 +171,54 @@
 </div>
 
 <script>
-    // إعدادات التخزين الافتراضية
-    const DEFAULT_KEY = "12345"; // الكود الافتراضي (يمكنك تغييره من لوحة التحكم)
-    
-    // التحقق مما إذا كان الجهاز مفعل مسبقاً
+    // ⚙️ إعدادات فايربيس الصحيحة بخط صغيراً const
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9ozGAGHkOkK7ojbRLooZeO4dMnceVAsU",
+        authDomain: "englishplatform-63a39.firebaseapp.com",
+        databaseURL: "https://englishplatform-63a39-default-rtdb.firebaseio.com",
+        projectId: "englishplatform-63a39",
+        storageBucket: "englishplatform-63a39.appspot.com",
+        messagingSenderId: "133416052297",
+        appId: "1:133416052297:web:857ba6bd8c956eba70c198"
+    };
+
+    // تهيئة فايربيس
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // الكود الافتراضي
+    let currentActiveKey = "12345";
+
+    // جلب البيانات من السحابة عند تحميل الصفحة
     window.onload = function() {
+        db.ref('settings/activationKey').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                currentActiveKey = snapshot.val();
+            }
+        });
+
+        db.ref('subscribers_count').on('value', (snapshot) => {
+            let count = snapshot.exists() ? snapshot.val() : 0;
+            document.getElementById('total-subscribers').innerText = count;
+        });
+
         if(localStorage.getItem("isActivated") === "true") {
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         }
     }
 
-    // التحقق من مفتاح التفعيل
+    // التحقق من كود التفعيل
     function checkActivationKey() {
         const userInput = document.getElementById('activation-input').value.trim();
-        let activeKey = localStorage.getItem("appActivationKey") || DEFAULT_KEY;
 
-        if(userInput === activeKey) {
+        if(userInput === currentActiveKey) {
+            if(localStorage.getItem("isActivated") !== "true") {
+                db.ref('subscribers_count').transaction((currentCount) => {
+                    return (currentCount || 0) + 1;
+                });
+            }
+
             localStorage.setItem("isActivated", "true");
             alert('تم تفعيل التطبيق بنجاح! أهلاً بك.');
             document.getElementById('lock-screen').classList.add('hidden');
@@ -183,34 +228,32 @@
         }
     }
 
-    // تسجيل خروج / قفل التطبيق
     function logoutApp() {
         localStorage.removeItem("isActivated");
         location.reload();
     }
 
-    // دخول لوحة تحكم الأدمن
     function openAdminLogin() {
         const password = prompt("أدخل كلمة مرور الأدمن:");
-        if(password === "admin2026") { // كلمة سر الأدمن الافتراضية
+        if(password === "admin2026") {
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             document.getElementById('admin-dashboard').classList.remove('hidden');
-            let currentKey = localStorage.getItem("appActivationKey") || DEFAULT_KEY;
-            document.getElementById('current-key-display').innerText = currentKey;
+            document.getElementById('current-key-display').innerText = currentActiveKey;
         } else if(password !== null) {
             alert("كلمة المرور غير صحيحة!");
         }
     }
 
-    // تحديث كود التفعيل من لوحة التحكم
     function updateActivationKey() {
         const newKey = document.getElementById('new-key-input').value.trim();
         if(newKey.length > 0) {
-            localStorage.setItem("appActivationKey", newKey);
-            document.getElementById('current-key-display').innerText = newKey;
-            alert("تم تحديث كود التفعيل بنجاح!");
-            document.getElementById('new-key-input').value = "";
+            db.ref('settings/activationKey').set(newKey).then(() => {
+                currentActiveKey = newKey;
+                document.getElementById('current-key-display').innerText = newKey;
+                alert("تم تحديث كود التفعيل سحابياً بنجاح!");
+                document.getElementById('new-key-input').value = "";
+            });
         } else {
             alert("يرجى إدخال كود صالح.");
         }
@@ -222,7 +265,6 @@
         document.getElementById('lock-screen').classList.remove('hidden');
     }
 
-    // دوال النطق والحروف للمنصة
     function speakText(text) {
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(text);
