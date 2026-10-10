@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التدريب التفاعلية - محمية وسحابية</title>
+    <title>منصة التدريب التفاعلية الشاملة</title>
     <!-- استدعاء مكتبة Firebase الأساسية -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -71,6 +71,25 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .score-board { font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .word-bank, .options-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .word-chip, .option-btn {
+            background-color: #e2e8f0;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+        }
+        .word-chip:hover, .option-btn:hover { background-color: #cbd5e1; }
+        .feedback { margin-top: 10px; font-weight: bold; }
+        .feedback.correct { color: var(--success-color); }
+        .feedback.incorrect { color: var(--error-color); }
+
         .whatsapp-box {
             text-align: center;
             background: linear-gradient(135deg, #25d366, #128c7e);
@@ -120,7 +139,7 @@
     </div>
 </div>
 
-<!-- المحتوى الأساسي -->
+<!-- المحتوى الأساسي الشامل -->
 <div id="main-app" class="container hidden">
     
     <!-- لوحة تحكم الأدمن -->
@@ -147,7 +166,7 @@
         <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">قفل التطبيق / تسجيل خروج</button>
     </header>
 
-    <!-- أقسام التطبيق -->
+    <!-- 1. قسم الحروف والنطق -->
     <section>
         <div class="score-board">تدريب على الحرف: <span id="current-letter">A</span></div>
         <div>
@@ -161,6 +180,42 @@
         </div>
     </section>
 
+    <!-- 2. قسم ترتيب الحروف -->
+    <section>
+        <div class="score-board">⭐ النقاط: <span id="word-score">0</span></div>
+        <div>رتب الحروف لتكوين الكلمة الصحيحة</div>
+        <div id="scrambled-display" style="font-size: 1.5rem; letter-spacing: 5px; margin: 15px 0; font-weight: bold;">T A C</div>
+        <div class="word-bank" id="letter-chips"></div>
+        <div id="word-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 3. قسم الأرقام الإنجليزية -->
+    <section>
+        <div class="score-board">🔢 تدريب الأرقام</div>
+        <div>
+            <div>🔢 <strong>الرقم:</strong> <span id="display-number">123</span></div>
+            <div>🗣️ <strong>النطق الصحيح:</strong> <span id="number-words">One Hundred Twenty Three</span> 
+                <button onclick="speakText(document.getElementById('number-words').innerText)">استمع 🔊</button>
+            </div>
+        </div>
+        <button onclick="randomizeNumber()" style="margin-top: 15px;">تغيير الرقم عشوائياً</button>
+    </section>
+
+    <!-- 4. قسم المحادثة الذكية -->
+    <section>
+        <div>💬 تدريب المحادثة الذكية</div>
+        <p>اختر رداً مناسباً لمواصلة المحادثة باللغة الإنجليزية:</p>
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: #1e293b;">
+            <p>🤖 <strong>التطبيق يقول:</strong> Hello! How are you today?</p>
+        </div>
+        <div class="options-group">
+            <button class="option-btn" onclick="checkChatResponse(true)">I'm fine, thank you!</button>
+            <button class="option-btn" onclick="checkChatResponse(false)">Blue car</button>
+        </div>
+        <div id="chat-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 5. قسم الدعاية والتواصل -->
     <section class="whatsapp-box">
         <h3>🌟 حول التطبيق والدعاية</h3>
         <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
@@ -171,7 +226,7 @@
 </div>
 
 <script>
-    // ⚙️ إعدادات فايربيس الصحيحة بخط صغيراً const
+    // ⚙️ إعدادات فايربيس السحابية لمشروعك
     const firebaseConfig = {
         apiKey: "AIzaSyC9ozGAGHkOkK7ojbRLooZeO4dMnceVAsU",
         authDomain: "englishplatform-63a39.firebaseapp.com",
@@ -186,10 +241,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // الكود الافتراضي
     let currentActiveKey = "12345";
 
-    // جلب البيانات من السحابة عند تحميل الصفحة
     window.onload = function() {
         db.ref('settings/activationKey').on('value', (snapshot) => {
             if(snapshot.exists()) {
@@ -206,9 +259,10 @@
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         }
+
+        initWordGame();
     }
 
-    // التحقق من كود التفعيل
     function checkActivationKey() {
         const userInput = document.getElementById('activation-input').value.trim();
 
@@ -265,6 +319,7 @@
         document.getElementById('lock-screen').classList.remove('hidden');
     }
 
+    // دوال النطق والصوت
     function speakText(text) {
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -278,6 +333,54 @@
         const examples = { 'A': 'Apple (تفاحة)', 'B': 'Ball (كرة)', 'C': 'Cat (قطة)' };
         document.getElementById('letter-example').innerText = examples[letter] || '';
         speakText(letter);
+    }
+
+    // لعبة ترتيب الحروف
+    let wordScore = 0;
+    function initWordGame() {
+        const container = document.getElementById('letter-chips');
+        container.innerHTML = '';
+        const letters = ['C', 'A', 'T'].sort(() => Math.random() - 0.5);
+        
+        letters.forEach(char => {
+            const btn = document.createElement('div');
+            btn.className = 'word-chip';
+            btn.innerText = char;
+            btn.onclick = () => {
+                const fb = document.getElementById('word-feedback');
+                if(char === 'C') {
+                    fb.innerText = 'إجابة صحيحة! 🎉';
+                    fb.className = 'feedback correct';
+                    wordScore++;
+                    document.getElementById('word-score').innerText = wordScore;
+                } else {
+                    fb.innerText = 'حاول مرة أخرى';
+                    fb.className = 'feedback incorrect';
+                }
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    // الأرقام العشوائية
+    function randomizeNumber() {
+        const randNum = Math.floor(Math.random() * 900) + 100;
+        document.getElementById('display-number').innerText = randNum;
+        const words = { 100: 'One Hundred', 200: 'Two Hundred', 500: 'Five Hundred', 123: 'One Hundred Twenty Three' };
+        document.getElementById('number-words').innerText = words[randNum] || ('Number ' + randNum);
+    }
+
+    // المحادثة الذكية
+    function checkChatResponse(isCorrect) {
+        const fb = document.getElementById('chat-feedback');
+        if(isCorrect) {
+            fb.innerText = 'رائع جداً! إجابة موفقة ومناسبة للسياق.';
+            fb.className = 'feedback correct';
+            speakText("I'm fine, thank you!");
+        } else {
+            fb.innerText = 'إجابة غير مناسبة، جرب اختيار الرد المتعارف عليه في التحية.';
+            fb.className = 'feedback incorrect';
+        }
     }
 </script>
 
