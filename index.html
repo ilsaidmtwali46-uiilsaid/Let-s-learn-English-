@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التدريب التفاعلية - لتعلم الإنجليزية</title>
+    <title>منصة التدريب التفاعلية - محمية</title>
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -26,25 +26,26 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        header h2 {
-            color: var(--primary-color);
-            font-size: 2rem;
-        }
-        section {
-            background: var(--card-bg);
+        .hidden { display: none !important; }
+        
+        /* شاشة قفل التفعيل */
+        #lock-screen {
+            background: white;
+            padding: 30px;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 50px auto;
         }
-        .score-board {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+        input[type="text"], input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
         }
         button {
             background-color: var(--primary-color);
@@ -57,32 +58,19 @@
             transition: background 0.3s;
             margin: 5px;
         }
-        button:hover {
-            background-color: #4338ca;
+        button:hover { background-color: #4338ca; }
+
+        header { text-align: center; margin-bottom: 30px; }
+        header h2 { color: var(--primary-color); font-size: 2rem; }
+        
+        section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
-        .options-group, .word-bank {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-        .option-btn, .word-chip {
-            background-color: #e2e8f0;
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #cbd5e1;
-        }
-        .option-btn:hover, .word-chip:hover {
-            background-color: #cbd5e1;
-        }
-        .feedback {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        .feedback.correct { color: var(--success-color); }
-        .feedback.incorrect { color: var(--error-color); }
+        .score-board { font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
         .whatsapp-box {
             text-align: center;
             background: linear-gradient(135deg, #25d366, #128c7e);
@@ -94,26 +82,62 @@
             color: white;
             text-decoration: none;
             font-weight: bold;
-            font-size: 1.1rem;
             display: inline-block;
             margin-top: 10px;
+        }
+        /* لوحة الأدمن */
+        .admin-panel {
+            background: #1e293b;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<!-- شاشة التحقق والتفعيل -->
+<div id="lock-screen">
+    <h2>🔒 التطبيق محمي برمز تفعيل</h2>
+    <p>للحصول على كود التفعيل الخاص بك، تواصل معنا عبر الواتساب</p>
+    <input type="text" id="activation-input" placeholder="أدخل كود التفعيل هنا">
+    <br>
+    <button onclick="checkActivationKey()">تحقق ودخول</button>
+    <br><br>
+    <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد،%20أريد%20كود%20التفعيل%20الخاص%20بمنصة%20تعلم%20الإنجليزية" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none;">
+        📱 طلب كود التفعيل عبر الواتساب
+    </a>
+    <div style="margin-top: 20px; font-size: 0.85rem;">
+        <button onclick="openAdminLogin()" style="background: transparent; color: #64748b; font-size: 0.8rem;">دخول الأدمن</button>
+    </div>
+</div>
+
+<!-- المحتوى الأساسي للمنصة (يظهر بعد التفعيل) -->
+<div id="main-app" class="container hidden">
+    
+    <!-- لوحة تحكم الأدمن (تظهر فقط للأدمن) -->
+    <div id="admin-dashboard" class="admin-panel hidden">
+        <h3>⚙️ لوحة تحكم الأدمن</h3>
+        <p>مرحباً بك يا أستاذ السيد. يمكنك من هنا التحكم بالإعدادات:</p>
+        <p>🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
+        <input type="text" id="new-key-input" placeholder="تغيير كود التفعيل">
+        <button onclick="updateActivationKey()">حفظ الكود الجديد</button>
+        <button onclick="closeAdminPanel()" style="background-color: #64748b;">إغلاق اللوحة</button>
+    </div>
+
     <header>
         <h2>🌟 منصة التدريب التفاعلية</h2>
         <p>تطبيقك المتكامل لتعلم القراءة، الكتابة، والأرقام بكل يسر وسهولة</p>
+        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">إلغاء التفعيل / قفل التطبيق</button>
     </header>
 
     <!-- قسم الحروف والنطق -->
-    <section id="letters-section">
+    <section>
         <div class="score-board">تدريب على الحرف: <span id="current-letter">A</span></div>
         <div>
             <div>🗣️ <strong>النطق:</strong> <button onclick="speakText(document.getElementById('current-letter').innerText)">استمع للنطق 🔊</button></div>
-            <div>📖 <strong>المعنى/مثال:</strong> <span id="letter-example">Apple (تفاحة)</span></div>
+            <div>📖 <strong>المعنى:</strong> <span id="letter-example">Apple (تفاحة)</span></div>
         </div>
         <div style="margin-top: 15px;">
             <button onclick="changeLetter('A')">A</button>
@@ -122,139 +146,97 @@
         </div>
     </section>
 
-    <!-- قسم ترتيب الحروف -->
-    <section id="scramble-word-section">
-        <div class="score-board">⭐ النقاط: <span id="word-score">0</span> / <span id="word-total">5</span></div>
-        <div>رتب الحروف لتكوين الكلمة الصحيحة (المثال: CAT)</div>
-        <div id="scrambled-display" style="font-size: 1.5rem; letter-spacing: 5px; margin: 15px 0; font-weight: bold;">T A C</div>
-        <div class="word-bank" id="letter-chips">
-            <!-- يتم تعبئتها ديناميكياً -->
-        </div>
-        <div id="word-feedback" class="feedback"></div>
-    </section>
-
-    <!-- قسم ترتيب الكلمات لجملة -->
-    <section id="scramble-sentence-section">
-        <div class="score-board">🏆 النقاط: <span id="sent-score">0</span> / <span id="sent-total">3</span></div>
-        <div>رتب الكلمات لتكوين جملة صحيحة</div>
-        <p>المعنى: <span id="sent-meaning">أنا أكتب كتاباً</span></p>
-        <div class="word-bank" id="sentence-chips">
-            <!-- يتم تعبئتها ديناميكياً -->
-        </div>
-        <div id="sent-feedback" class="feedback"></div>
-    </section>
-
-    <!-- قسم الأرقام -->
-    <section id="numbers-section">
-        <div class="score-board">🔢 نقاط الأرقام: <span id="num-score">0</span></div>
-        <div>تدريب ونطق وتجميع الأرقام الإنجليزية</div>
-        <div style="margin: 15px 0;">
-            <div>🔢 <strong>الرقم:</strong> <span id="display-number">123</span></div>
-            <div>🗣️ <strong>النطق الصحيح:</strong> <span id="number-words">One Hundred Twenty Three</span> 
-                <button onclick="speakText(document.getElementById('number-words').innerText)">استمع 🔊</button>
-            </div>
-        </div>
-        <button onclick="randomizeNumber()">تغيير الرقم عشوائياً</button>
-    </section>
-
-    <!-- قسم المحادثة الذكية -->
-    <section id="chat-section">
-        <div>💬 تدريب المحادثة الذكية</div>
-        <p>اختر رداً مناسباً لمواصلة المحادثة باللغة الإنجليزية:</p>
-        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-            <p>🤖 <strong>التطبيق يقول:</strong> Hello! How are you today?</p>
-        </div>
-        <div class="options-group">
-            <button class="option-btn" onclick="checkChatResponse(true)">I'm fine, thank you!</button>
-            <button class="option-btn" onclick="checkChatResponse(false)">Blue car</button>
-        </div>
-        <div id="chat-feedback" class="feedback"></div>
-    </section>
-
     <!-- قسم الدعاية والتواصل -->
     <section class="whatsapp-box">
         <h3>🌟 حول التطبيق والدعاية</h3>
-        <p>منصة التدريب التفاعلية الشاملة - إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
-        <p>💬 اقتراحات، شكاوى، أو استفسارات؟</p>
-        <a href="https://wa.me/201115197980?text=%D_7%D_5%D_C%D_5%D_7%D_8%20%D_0%D_4%D_C%D_8%20%D_7%D_5%D_3%D_5%D_5%D_5%20%D_C%D_5%D_3%D_5%D_5%D_5%2C%20%D_E%D_5%D_4%D_5%D_7%20%D_0%D_4%D_C%D_8%20%D_0%D_4%D_C%D_8%20%D_0%D_4%D_C%D_8" target="_blank">
-            📱 تواصل عبر الواتساب الآن (رقم: 201115197980+)
+        <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
+        <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد" target="_blank">
+            📱 تواصل عبر الواتساب (رقم: 201115197980+)
         </a>
     </section>
 </div>
 
 <script>
-    // 1. ميزة نطق النصوص (Web Speech API)
+    // إعدادات التخزين الافتراضية
+    const DEFAULT_KEY = "12345"; // الكود الافتراضي (يمكنك تغييره من لوحة التحكم)
+    
+    // التحقق مما إذا كان الجهاز مفعل مسبقاً
+    window.onload = function() {
+        if(localStorage.getItem("isActivated") === "true") {
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        }
+    }
+
+    // التحقق من مفتاح التفعيل
+    function checkActivationKey() {
+        const userInput = document.getElementById('activation-input').value.trim();
+        let activeKey = localStorage.getItem("appActivationKey") || DEFAULT_KEY;
+
+        if(userInput === activeKey) {
+            localStorage.setItem("isActivated", "true");
+            alert('تم تفعيل التطبيق بنجاح! أهلاً بك.');
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        } else {
+            alert('كود التفعيل غير صحيح. يرجى طلبه عبر الواتساب.');
+        }
+    }
+
+    // تسجيل خروج / قفل التطبيق
+    function logoutApp() {
+        localStorage.removeItem("isActivated");
+        location.reload();
+    }
+
+    // دخول لوحة تحكم الأدمن
+    function openAdminLogin() {
+        const password = prompt("أدخل كلمة مرور الأدمن:");
+        if(password === "admin2026") { // كلمة سر الأدمن الافتراضية
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            let currentKey = localStorage.getItem("appActivationKey") || DEFAULT_KEY;
+            document.getElementById('current-key-display').innerText = currentKey;
+        } else if(password !== null) {
+            alert("كلمة المرور غير صحيحة!");
+        }
+    }
+
+    // تحديث كود التفعيل من لوحة التحكم
+    function updateActivationKey() {
+        const newKey = document.getElementById('new-key-input').value.trim();
+        if(newKey.length > 0) {
+            localStorage.setItem("appActivationKey", newKey);
+            document.getElementById('current-key-display').innerText = newKey;
+            alert("تم تحديث كود التفعيل بنجاح!");
+            document.getElementById('new-key-input').value = "";
+        } else {
+            alert("يرجى إدخال كود صالح.");
+        }
+    }
+
+    function closeAdminPanel() {
+        document.getElementById('admin-dashboard').classList.add('hidden');
+        document.getElementById('main-app').classList.add('hidden');
+        document.getElementById('lock-screen').classList.remove('hidden');
+    }
+
+    // دوال النطق والحروف للمنصة
     function speakText(text) {
         if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             window.speechSynthesis.speak(utterance);
-        } else {
-            alert('متصفحك لا يدعم خاصية النطق الصوتي.');
         }
     }
 
-    // 2. تحديث الحروف
     function changeLetter(letter) {
         document.getElementById('current-letter').innerText = letter;
         const examples = { 'A': 'Apple (تفاحة)', 'B': 'Ball (كرة)', 'C': 'Cat (قطة)' };
         document.getElementById('letter-example').innerText = examples[letter] || '';
         speakText(letter);
     }
-
-    // 3. ألعاب ترتيب الحروف البسيطة
-    let wordScore = 0;
-    function initWordGame() {
-        const container = document.getElementById('letter-chips');
-        container.innerHTML = '';
-        const letters = ['C', 'A', 'T'].sort(() => Math.random() - 0.5);
-        
-        letters.forEach(char => {
-            const btn = document.createElement('div');
-            btn.className = 'word-chip';
-            btn.innerText = char;
-            btn.onclick = () => {
-                document.getElementById('word-feedback').innerText = char === 'C' ? 'إجابة صحيحة! 🎉' : 'حاول مرة أخرى';
-                document.getElementById('word-feedback').className = 'feedback ' + (char === 'C' ? 'correct' : 'incorrect');
-                if(char === 'C') {
-                    wordScore++;
-                    document.getElementById('word-score').innerText = wordScore;
-                }
-            };
-            container.appendChild(btn);
-        });
-    }
-
-    // 4. أرقام عشوائية
-    function randomizeNumber() {
-        const randNum = Math.floor(Math.random() * 900) + 100;
-        document.getElementById('display-number').innerText = randNum;
-        document.getElementById('number-words').innerText = numberToWords(randNum);
-    }
-
-    function numberToWords(num) {
-        // مبسط لعرض رقم نموذجي بالإنجليزية
-        const words = { 100: 'One Hundred', 200: 'Two Hundred', 500: 'Five Hundred', 123: 'One Hundred Twenty Three' };
-        return words[num] || 'Number ' + num;
-    }
-
-    // 5. محادثة ذكية
-    function checkChatResponse(isCorrect) {
-        const fb = document.getElementById('chat-feedback');
-        if(isCorrect) {
-            fb.innerText = 'رائع جداً! إجابة موفقة ومناسبة للسياق.';
-            fb.className = 'feedback correct';
-            speakText("I'm fine, thank you!");
-        } else {
-            fb.innerText = 'إجابة غير مناسبة، جرب اختيار الرد المتعارف عليه في التحية.';
-            fb.className = 'feedback incorrect';
-        }
-    }
-
-    // التشغيل الأولي عند تحميل الصفحة
-    window.onload = function() {
-        initWordGame();
-    };
 </script>
 
 </body>
