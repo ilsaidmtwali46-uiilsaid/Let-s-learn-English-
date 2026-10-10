@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التدريب التفاعلية الشاملة</title>
+    <title>منصة Let's Learn English التعليمية الشاملة</title>
     <!-- استدعاء مكتبة Firebase الأساسية -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -26,7 +26,7 @@
             padding: 20px;
             direction: rtl;
         }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
         .hidden { display: none !important; }
         
         #lock-screen {
@@ -60,32 +60,49 @@
         }
         button:hover { background-color: #4338ca; }
 
-        header { text-align: center; margin-bottom: 30px; }
+        header { text-align: center; margin-bottom: 20px; }
         header h2 { color: var(--primary-color); font-size: 2rem; }
         
-        section {
+        /* لوحة التحكم الرئيسية كمفاتيح اختيار الأقسام */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .section-btn {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background 0.2s;
+            border: none;
+        }
+        .section-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #4338ca, #2563eb);
+        }
+
+        section.content-section {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
+
+        .back-btn {
+            background-color: #64748b;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover { background-color: #475569; }
+
         .score-board { font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
-        .word-bank, .options-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-        .word-chip, .option-btn {
-            background-color: #e2e8f0;
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #cbd5e1;
-        }
-        .word-chip:hover, .option-btn:hover { background-color: #cbd5e1; }
         .feedback { margin-top: 10px; font-weight: bold; }
         .feedback.correct { color: var(--success-color); }
         .feedback.incorrect { color: var(--error-color); }
@@ -96,6 +113,7 @@
             color: white;
             border-radius: 12px;
             padding: 20px;
+            margin-top: 20px;
         }
         .whatsapp-box a {
             color: white;
@@ -104,118 +122,142 @@
             display: inline-block;
             margin-top: 10px;
         }
-        .admin-panel {
+        
+        .admin-box {
             background: #1e293b;
             color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        .stat-box {
-            background: #334155;
-            padding: 10px;
+            padding: 15px;
             border-radius: 8px;
-            margin: 10px 0;
-            display: inline-block;
-            width: 45%;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<!-- شاشة التفعيل -->
+<!-- 1. شاشة قفل وتفعيل التطبيق -->
 <div id="lock-screen">
-    <h2>🔒 التطبيق محمي برمز تفعيل</h2>
-    <p>أدخل كود التفعيل للحصول على صلاحية الدخول للمنصة</p>
-    <input type="text" id="activation-input" placeholder="أدخل كود التفعيل هنا">
+    <h2>🔒 منصة Let's Learn English</h2>
+    <p>أدخل كود التفعيل للوصول إلى الأقسام التعليمية</p>
+    <input type="text" id="activation-input" placeholder="أدخل كود التفعيل">
     <br>
     <button onclick="checkActivationKey()">تحقق ودخول</button>
     <br><br>
     <a href="https://wa.me/201115197980?text=مرحباً%20أستاذ%20السيد،%20أريد%20كود%20التفعيل%20الخاص%20بمنصة%20تعلم%20الإنجليزية" target="_blank" style="color: #25d366; font-weight: bold; text-decoration: none;">
         📱 طلب كود التفعيل عبر الواتساب
     </a>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 15px;">
         <button onclick="openAdminLogin()" style="background: transparent; color: #64748b; font-size: 0.8rem;">دخول الأدمن</button>
     </div>
 </div>
 
-<!-- المحتوى الأساسي الشامل -->
+<!-- المحتوى الرئيسي للمنصة -->
 <div id="main-app" class="container hidden">
     
-    <!-- لوحة تحكم الأدمن -->
-    <div id="admin-dashboard" class="admin-panel hidden">
-        <h3>⚙️ لوحة تحكم الأدمن (سحابية مباشرة)</h3>
-        <p>مرحباً بك يا أستاذ السيد.</p>
-        
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <div class="stat-box">
-                👥 إجمالي المشتركين: <br><strong id="total-subscribers" style="font-size: 1.5rem; color: #38bdf8;">0</strong>
-            </div>
-        </div>
-
-        <p style="margin-top: 15px;">🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
-        <input type="text" id="new-key-input" placeholder="تغيير كود التفعيل">
-        <button onclick="updateActivationKey()">حفظ الكود الجديد</button>
-        <br>
-        <button onclick="closeAdminPanel()" style="background-color: #64748b; margin-top: 10px;">إغلاق اللوحة والخروج</button>
-    </div>
-
     <header>
-        <h2>🌟 منصة التدريب التفاعلية</h2>
-        <p>تطبيقك المتكامل لتعلم القراءة، الكتابة، والأرقام بكل يسر وسهولة</p>
-        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">قفل التطبيق / تسجيل خروج</button>
+        <h2>🌟 منصة Let's Learn English التعليمية</h2>
+        <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
+        <button onclick="logoutApp()" style="background-color: #ef4444; font-size: 0.8rem; padding: 5px 10px;">إغلاق وقفل التطبيق</button>
     </header>
 
-    <!-- 1. قسم الحروف والنطق -->
-    <section>
-        <div class="score-board">تدريب على الحرف: <span id="current-letter">A</span></div>
-        <div>
-            <div>🗣️ <strong>النطق:</strong> <button onclick="speakText(document.getElementById('current-letter').innerText)">استمع للنطق 🔊</button></div>
-            <div>📖 <strong>المعنى:</strong> <span id="letter-example">Apple (تفاحة)</span></div>
+    <!-- لوحة التحكم الرئيسية (مفاتيح اختيار الأقسام) -->
+    <div id="dashboard-menu" class="container">
+        <h3 style="text-align: center; margin-bottom: 20px;">📂 لوحة التحكم الرئيسية - اختر قسماً للبدء:</h3>
+        
+        <div class="dashboard-grid">
+            <button class="section-btn" onclick="showSection('sec-letters')">🔤 تعليم الأحرف (كتابة ونطق وترتيب)</button>
+            <button class="section-btn" onclick="showSection('sec-words')">📖 قسم الكلمات (كتابة ونطق وترتيب)</button>
+            <button class="section-btn" onclick="showSection('sec-sentences')">📝 قسم الجمل الكاملة (كتابة وترتيب)</button>
+            <button class="section-btn" onclick="showSection('sec-chat')">💬 محادثة جديدة مع التطبيق</button>
+            <button class="section-btn" onclick="showSection('sec-numbers')">🔢 تعليم الأرقام والتركيب</button>
+            <button class="section-btn" onclick="showSection('sec-math')">➕ المسائل الحسابية (جمع، طرح، ضرب، قسمة)</button>
+            <button class="section-btn" onclick="showSection('sec-tests')">📊 اختبارات وتحديد المستوى</button>
         </div>
+
+        <!-- لوحة تحكم الأدمن السحابية داخل القائمة -->
+        <div id="admin-panel" class="admin-box hidden">
+            <h4>⚙️ لوحة تحكم الأدمن السحابية</h4>
+            <p>👥 إجمالي المشتركين المفعلين: <strong id="total-subscribers" style="color: #38bdf8; font-size: 1.3rem;">0</strong></p>
+            <p>🔑 كود التفعيل الحالي: <strong id="current-key-display">12345</strong></p>
+            <input type="text" id="new-key-input" placeholder="تغيير كود التفعيل لكل المستخدمين">
+            <button onclick="updateActivationKey()">حفظ الكود الجديد</button>
+        </div>
+    </div>
+
+    <!-- 2. قسم تعليم الأحرف -->
+    <section id="sec-letters" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>🔤 تعليم الأحرف</h3>
+        <p>استمع للنطق، تعرف على المعنى، وتدرب على مكان الحرف:</p>
+        <div class="score-board">الحرف الحالي: <span id="cur-letter">A</span> - <span id="let-meaning">Apple (تفاحة)</span></div>
+        <button onclick="speakText(document.getElementById('cur-letter').innerText)">استطق الحرف 🔊</button>
         <div style="margin-top: 15px;">
-            <button onclick="changeLetter('A')">A</button>
-            <button onclick="changeLetter('B')">B</button>
-            <button onclick="changeLetter('C')">C</button>
+            <button onclick="setLetter('A', 'Apple (تفاحة)')">A</button>
+            <button onclick="setLetter('B', 'Ball (كرة)')">B</button>
+            <button onclick="setLetter('C', 'Cat (قطة)')">C</button>
         </div>
     </section>
 
-    <!-- 2. قسم ترتيب الحروف -->
-    <section>
-        <div class="score-board">⭐ النقاط: <span id="word-score">0</span></div>
-        <div>رتب الحروف لتكوين الكلمة الصحيحة</div>
-        <div id="scrambled-display" style="font-size: 1.5rem; letter-spacing: 5px; margin: 15px 0; font-weight: bold;">T A C</div>
-        <div class="word-bank" id="letter-chips"></div>
-        <div id="word-feedback" class="feedback"></div>
+    <!-- 3. قسم الكلمات -->
+    <section id="sec-words" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>📖 قسم الكلمات</h3>
+        <p>إعادة ترتيب حروف الكلمة الصحيحة:</p>
+        <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 5px; margin: 15px 0;">C A T ➔ T A C</div>
+        <button onclick="speakText('Cat')">نطق الكلمة 🔊</button>
+        <div id="word-fb" class="feedback"></div>
     </section>
 
-    <!-- 3. قسم الأرقام الإنجليزية -->
-    <section>
-        <div class="score-board">🔢 تدريب الأرقام</div>
-        <div>
-            <div>🔢 <strong>الرقم:</strong> <span id="display-number">123</span></div>
-            <div>🗣️ <strong>النطق الصحيح:</strong> <span id="number-words">One Hundred Twenty Three</span> 
-                <button onclick="speakText(document.getElementById('number-words').innerText)">استمع 🔊</button>
-            </div>
-        </div>
-        <button onclick="randomizeNumber()" style="margin-top: 15px;">تغيير الرقم عشوائياً</button>
+    <!-- 4. قسم الجمل الكاملة -->
+    <section id="sec-sentences" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>📝 قسم الجمل الكاملة</h3>
+        <p>رتب كلمات الجملة التالية: [is - He - a - teacher]</p>
+        <button onclick="speakText('He is a teacher')">استمع للجملة 🔊</button>
+        <div id="sent-fb" class="feedback"></div>
     </section>
 
-    <!-- 4. قسم المحادثة الذكية -->
-    <section>
-        <div>💬 تدريب المحادثة الذكية</div>
-        <p>اختر رداً مناسباً لمواصلة المحادثة باللغة الإنجليزية:</p>
-        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: #1e293b;">
-            <p>🤖 <strong>التطبيق يقول:</strong> Hello! How are you today?</p>
+    <!-- 5. قسم المحادثة -->
+    <section id="sec-chat" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>💬 محادثة جديدة مع التطبيق</h3>
+        <p>🤖 التطبيق يقول: <strong>Hello! How can I help you today?</strong></p>
+        <button onclick="speakText('Hello! How can I help you today?')">استمع 🔊</button>
+        <div style="margin-top: 15px;">
+            <button onclick="chatReply('correct')">I want to learn English, thank you.</button>
+            <button onclick="chatReply('wrong')">Red car.</button>
         </div>
-        <div class="options-group">
-            <button class="option-btn" onclick="checkChatResponse(true)">I'm fine, thank you!</button>
-            <button class="option-btn" onclick="checkChatResponse(false)">Blue car</button>
-        </div>
-        <div id="chat-feedback" class="feedback"></div>
+        <div id="chat-fb" class="feedback"></div>
     </section>
 
-    <!-- 5. قسم الدعاية والتواصل -->
+    <!-- 6. قسم الأرقام والتركيب -->
+    <section id="sec-numbers" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>🔢 تعليم الأرقام والتركيب</h3>
+        <p>تركيب الأرقام (رقمين، ثلاثة، أربعة أرقام):</p>
+        <div style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">45, 389, 7412</div>
+        <button onclick="speakText('Four thousand seven hundred twelve')">نطق الأرقام 🔊</button>
+    </section>
+
+    <!-- 7. المسائل الحسابية -->
+    <section id="sec-math" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>➕ المسائل الحسابية (جمع، طرح، ضرب، قسمة)</h3>
+        <p>احسب المسألة التالية: <strong>15 × 4 = ?</strong></p>
+        <input type="text" id="math-ans" placeholder="اكتب الناتج">
+        <button onclick="checkMath(60)">تحقق من الناتج</button>
+        <div id="math-fb" class="feedback"></div>
+    </section>
+
+    <!-- 8. الاختبارات وتحديد المستوى -->
+    <section id="sec-tests" class="content-section hidden">
+        <button class="section-btn back-btn" onclick="goHome()">⬅ العودة لوحة التحكم</button>
+        <h3>📊 اختبارات وتحديد المستوى</h3>
+        <p>اختر المستوى واختبر معلوماتك:</p>
+        <button onclick="alert('مستوى مبتدئ: ممتاز!')">المستوى الأول (مبتدئ)</button>
+        <button onclick="alert('مستوى متقدم: رائع جداً!')">المستوى الثاني (متقدم)</button>
+    </section>
+
+    <!-- قسم الدعاية والتواصل -->
     <section class="whatsapp-box">
         <h3>🌟 حول التطبيق والدعاية</h3>
         <p>إشراف وتطوير: <strong>الأستاذ/ السيد متولي</strong></p>
@@ -223,6 +265,7 @@
             📱 تواصل عبر الواتساب (رقم: 201115197980+)
         </a>
     </section>
+
 </div>
 
 <script>
@@ -237,17 +280,13 @@
         appId: "1:133416052297:web:857ba6bd8c956eba70c198"
     };
 
-    // تهيئة فايربيس
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     let currentActiveKey = "12345";
 
     window.onload = function() {
         db.ref('settings/activationKey').on('value', (snapshot) => {
-            if(snapshot.exists()) {
-                currentActiveKey = snapshot.val();
-            }
+            if(snapshot.exists()) currentActiveKey = snapshot.val();
         });
 
         db.ref('subscribers_count').on('value', (snapshot) => {
@@ -259,26 +298,20 @@
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         }
-
-        initWordGame();
     }
 
     function checkActivationKey() {
         const userInput = document.getElementById('activation-input').value.trim();
-
         if(userInput === currentActiveKey) {
             if(localStorage.getItem("isActivated") !== "true") {
-                db.ref('subscribers_count').transaction((currentCount) => {
-                    return (currentCount || 0) + 1;
-                });
+                db.ref('subscribers_count').transaction((currentCount) => (currentCount || 0) + 1);
             }
-
             localStorage.setItem("isActivated", "true");
-            alert('تم تفعيل التطبيق بنجاح! أهلاً بك.');
+            alert('تم تفعيل التطبيق بنجاح!');
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
         } else {
-            alert('كود التفعيل غير صحيح. يرجى طلبه عبر الواتساب.');
+            alert('كود التفعيل غير صحيح.');
         }
     }
 
@@ -287,14 +320,34 @@
         location.reload();
     }
 
+    // التنقل بين الأقسام من لوحة التحكم
+    function showSection(sectionId) {
+        // إخفاء كل الأقسام
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(sec => sec.classList.add('hidden'));
+        
+        // إخفاء القائمة الرئيسية
+        document.getElementById('dashboard-menu').classList.add('hidden');
+
+        // إظهار القسم المطلوب
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    function goHome() {
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(sec => sec.classList.add('hidden'));
+        document.getElementById('dashboard-menu').classList.remove('hidden');
+    }
+
+    // دوال الأدمن
     function openAdminLogin() {
-        const password = prompt("أدخل كلمة مرور الأدمن:");
-        if(password === "admin2026") {
+        const pass = prompt("أدخل كلمة مرور الأدمن:");
+        if(pass === "admin2026") {
             document.getElementById('lock-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('admin-dashboard').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
             document.getElementById('current-key-display').innerText = currentActiveKey;
-        } else if(password !== null) {
+        } else if(pass !== null) {
             alert("كلمة المرور غير صحيحة!");
         }
     }
@@ -305,81 +358,48 @@
             db.ref('settings/activationKey').set(newKey).then(() => {
                 currentActiveKey = newKey;
                 document.getElementById('current-key-display').innerText = newKey;
-                alert("تم تحديث كود التفعيل سحابياً بنجاح!");
+                alert("تم تحديث كود التفعيل لكل المستخدمين سحابياً!");
                 document.getElementById('new-key-input').value = "";
             });
-        } else {
-            alert("يرجى إدخال كود صالح.");
         }
     }
 
-    function closeAdminPanel() {
-        document.getElementById('admin-dashboard').classList.add('hidden');
-        document.getElementById('main-app').classList.add('hidden');
-        document.getElementById('lock-screen').classList.remove('hidden');
-    }
-
-    // دوال النطق والصوت
+    // دوال نطق وطريقة الأقسام
     function speakText(text) {
         if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            window.speechSynthesis.speak(utterance);
+            const ut = new SpeechSynthesisUtterance(text);
+            ut.lang = 'en-US';
+            window.speechSynthesis.speak(ut);
         }
     }
 
-    function changeLetter(letter) {
-        document.getElementById('current-letter').innerText = letter;
-        const examples = { 'A': 'Apple (تفاحة)', 'B': 'Ball (كرة)', 'C': 'Cat (قطة)' };
-        document.getElementById('letter-example').innerText = examples[letter] || '';
+    function setLetter(letter, meaning) {
+        document.getElementById('cur-letter').innerText = letter;
+        document.getElementById('let-meaning').innerText = meaning;
         speakText(letter);
     }
 
-    // لعبة ترتيب الحروف
-    let wordScore = 0;
-    function initWordGame() {
-        const container = document.getElementById('letter-chips');
-        container.innerHTML = '';
-        const letters = ['C', 'A', 'T'].sort(() => Math.random() - 0.5);
-        
-        letters.forEach(char => {
-            const btn = document.createElement('div');
-            btn.className = 'word-chip';
-            btn.innerText = char;
-            btn.onclick = () => {
-                const fb = document.getElementById('word-feedback');
-                if(char === 'C') {
-                    fb.innerText = 'إجابة صحيحة! 🎉';
-                    fb.className = 'feedback correct';
-                    wordScore++;
-                    document.getElementById('word-score').innerText = wordScore;
-                } else {
-                    fb.innerText = 'حاول مرة أخرى';
-                    fb.className = 'feedback incorrect';
-                }
-            };
-            container.appendChild(btn);
-        });
-    }
-
-    // الأرقام العشوائية
-    function randomizeNumber() {
-        const randNum = Math.floor(Math.random() * 900) + 100;
-        document.getElementById('display-number').innerText = randNum;
-        const words = { 100: 'One Hundred', 200: 'Two Hundred', 500: 'Five Hundred', 123: 'One Hundred Twenty Three' };
-        document.getElementById('number-words').innerText = words[randNum] || ('Number ' + randNum);
-    }
-
-    // المحادثة الذكية
-    function checkChatResponse(isCorrect) {
-        const fb = document.getElementById('chat-feedback');
-        if(isCorrect) {
-            fb.innerText = 'رائع جداً! إجابة موفقة ومناسبة للسياق.';
-            fb.className = 'feedback correct';
-            speakText("I'm fine, thank you!");
+    function chatReply(type) {
+        const fb = document.getElementById('chat-fb');
+        if(type === 'correct') {
+            fb.innerText = "إجابة صحيحة وممتازة! 🎉";
+            fb.className = "feedback correct";
+            speakText("I want to learn English, thank you.");
         } else {
-            fb.innerText = 'إجابة غير مناسبة، جرب اختيار الرد المتعارف عليه في التحية.';
-            fb.className = 'feedback incorrect';
+            fb.innerText = "إجابة غير مناسبة للسياق، حاول مرة أخرى.";
+            fb.className = "feedback incorrect";
+        }
+    }
+
+    function checkMath(correctVal) {
+        const val = document.getElementById('math-ans').value.trim();
+        const fb = document.getElementById('math-fb');
+        if(parseInt(val) === correctVal) {
+            fb.innerText = "إجابة صحيحة! احسنت 👏";
+            fb.className = "feedback correct";
+        } else {
+            fb.innerText = "إجابة خاطئة، جرب مجدداً.";
+            fb.className = "feedback incorrect";
         }
     }
 </script>
